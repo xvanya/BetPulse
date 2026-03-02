@@ -23,6 +23,7 @@ import AdminPromotionsPage from './pages/AdminPromotionsPage';
 import AdminSportsPage from './pages/AdminSportsPage';
 import SportsCatalogPage from './pages/SportsCatalogPage';
 import CompetitionDetailsPage from './pages/CompetitionDetailsPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 
 function App() {
     const [isLoading, setIsLoading] = useState(true);
@@ -44,6 +45,7 @@ function App() {
                         <Route path="/profile" element={<ProfilePage />} />
                         <Route path="/catalog" element={<SportsCatalogPage />} />
                         <Route path="/competition/:id" element={<CompetitionDetailsPage />} />
+                        <Route path="/reset-password" element={<ResetPasswordPage />} />
                     </Route>
 
                     <Route path="/admin" element={<AdminLayout />}>

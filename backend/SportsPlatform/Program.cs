@@ -33,6 +33,7 @@ builder.Services.AddScoped<SportService>();
 builder.Services.AddScoped<CompetitionService>();
 builder.Services.AddScoped<PromotionService>();
 builder.Services.AddScoped<BetService>();
+builder.Services.AddScoped<EmailService>();
 //builder.Services.AddHostedService<SportsPlatform.Services.SportsSyncService>();
 //оце розкоментувати тільки коли треба буде синхронізація
 

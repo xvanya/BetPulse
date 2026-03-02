@@ -57,11 +57,9 @@ const LoginPage: FC = () => {
         if (!forgotEmail) return alert("Введіть email");
         setIsProcessing(true);
         try {
-            // РОЗКОМЕНТУЙ, КОЛИ БЕКЕНД БУДЕ ГОТОВИЙ ПРИЙМАТИ ЦЕЙ ЗАПИТ:
-            // await api.post('/auth/forgot-password', { email: forgotEmail });
-            await new Promise(res => setTimeout(res, 500)); // Тимчасова імітація
+            await api.post('/auth/forgot-password', { email: forgotEmail });
             setForgotStep('sent');
-        } catch (error) {
+        } catch {
             alert("Помилка відправки. Перевірте email.");
         } finally {
             setIsProcessing(false);

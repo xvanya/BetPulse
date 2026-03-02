@@ -9,6 +9,10 @@ public class User
     public string Role { get; set; } = "User"; // "User" або "Admin"
     public decimal Balance { get; set; } = 10000m;
 
+    //для скидання паролю
+    public string? ResetToken { get; set; } 
+    public DateTime? ResetTokenExpiry { get; set; }
+
     // Зв'язки
     public List<Favorite> Favorites { get; set; } = new();
     public List<Bet> Bets { get; set; } = new();
