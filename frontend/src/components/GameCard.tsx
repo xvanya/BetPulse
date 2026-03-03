@@ -5,27 +5,32 @@ type Props = {
     awayTeam: string;
     homeOdd: number;
     awayOdd: number;
+    time?: string;
 };
 
-const GameCard = ({ homeTeam, awayTeam, homeOdd, awayOdd }: Props) => {
+const GameCard = ({ homeTeam, awayTeam, homeOdd, awayOdd, time }: Props) => {
+    const isLive = !time;
+
     return (
-        <div className="game-card">
-            <div className="live-badge">
-                <b className="live-text">LIVE</b>
+        <div className="gameCard">
+            <div className={isLive ? "gameCard__live" : "gameCard__time"}>
+                <b className={isLive ? "gameCard__liveText" : "gameCard__timeText"}>
+                    {isLive ? "LIVE" : time}
+                </b>
             </div>
 
-            <div className="teams-wrapper">
-                <div className="team-row">
-                    <b className="team-name">{homeTeam}</b>
-                    <div className="odd-box">
-                        <b>{homeOdd}</b>
+            <div className="gameCard__right">
+                <div className="gameCard__row">
+                    <b className="gameCard__team">{homeTeam}</b>
+                    <div className="gameCard__odd">
+                        <b className="gameCard__oddText">{homeOdd}</b>
                     </div>
                 </div>
 
-                <div className="team-row">
-                    <b className="team-name">{awayTeam}</b>
-                    <div className="odd-box">
-                        <b>{awayOdd}</b>
+                <div className="gameCard__row">
+                    <b className="gameCard__team">{awayTeam}</b>
+                    <div className="gameCard__odd">
+                        <b className="gameCard__oddText">{awayOdd}</b>
                     </div>
                 </div>
             </div>

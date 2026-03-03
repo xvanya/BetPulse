@@ -6,6 +6,20 @@
     box-sizing: border-box;
 }
 
+.home-page { background:#101010; min-height:100vh; }
+
+.home-content.container{
+    max-width:1840px !important;
+    padding-left:40px !important;
+    padding-right:40px !important;
+}
+
+.home-wide{
+    max-width:1840px;
+    margin:0 auto;
+    padding:0 40px;
+}
+
 html, body, #root {
     height: auto;
     min-height: 100%;
@@ -200,4 +214,28 @@ html, body, #root {
     .quick-categories {
         grid-template-columns: 1fr;
     }
+}
+
+.home-content{
+    max-width: 1840px;
+    padding-left: 40px !important;
+    padding-right: 40px !important;
+}
+
+.home-section{
+    margin-top: 40px;
+}
+
+.home-section__title{
+    margin: 0 0 20px 0;
+    font-size: 36px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.home-section__titleSm{
+    margin: 0 0 20px 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
 }
