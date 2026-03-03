@@ -47,7 +47,10 @@ const groupByCountryLeague = (matches: MatchDto[]): Group[] => {
             awayTeam: m.awayTeam,
             homeOdd: m.homeOdd,
             awayOdd: m.awayOdd,
-            time: m.isLive ? undefined : m.startTime,
+            time: m.isLive ? undefined : new Date(m.startTime).toLocaleTimeString("uk-UA", {
+                hour: "2-digit",
+                minute: "2-digit",
+            }),
         });
     }
     return Array.from(map.values()).map((g) => ({
@@ -75,26 +78,7 @@ const pickFootballGroupsLikeFigma = (groups: Group[]) => {
     return groups.slice(0, 2);
 };
 
-const tennisFallback: Group[] = [
-    {
-        country: "Відкритий Чемпіонат Австралії",
-        league: "Кваліфікація - Чоловіки",
-        items: [
-            { id: 1001, homeTeam: "Арсенал", awayTeam: "Ліверпуль", homeOdd: 1.59, awayOdd: 5.65, time: undefined },
-            { id: 1002, homeTeam: "Арсенал", awayTeam: "Ліверпуль", homeOdd: 1.59, awayOdd: 5.65, time: "20:00" },
-            { id: 1003, homeTeam: "Арсенал", awayTeam: "Ліверпуль", homeOdd: 1.59, awayOdd: 5.65, time: "20:00" },
-        ],
-    },
-    {
-        country: "Відкритий Чемпіонат Австралії",
-        league: "Кваліфікація - Чоловіки",
-        items: [
-            { id: 1004, homeTeam: "Джуліо Дзепп'єрі", awayTeam: "Реі Сакамото", homeOdd: 1.59, awayOdd: 5.65, time: undefined },
-            { id: 1005, homeTeam: "Джуліо Дзепп'єрі", awayTeam: "Реі Сакамото", homeOdd: 1.59, awayOdd: 5.65, time: "20:00" },
-            { id: 1006, homeTeam: "Джуліо Дзепп'єрі", awayTeam: "Реі Сакамото", homeOdd: 1.59, awayOdd: 5.65, time: "20:00" },
-        ],
-    },
-];
+
 
 const HomePage = () => {
     const [popularMatches, setPopularMatches] = useState<MatchDto[]>([]);
@@ -121,11 +105,10 @@ const HomePage = () => {
     }, [popularMatches]);
 
     const tennisGroups = useMemo<Group[]>(() => {
-        const tennis = popularMatches.filter((m) => m.sportKey === "tennis");
-        const groups = groupByCountryLeague(tennis);
-        return groups.length ? groups.slice(0, 2) : tennisFallback;
+        const basketball = popularMatches.filter((m) => m.sportKey === "basketball");
+        const groups = groupByCountryLeague(basketball);
+        return groups.slice(0, 2);
     }, [popularMatches]);
-
     return (
         <div className="home-page">
             <div className="container-fluid p-0">
@@ -156,7 +139,7 @@ const HomePage = () => {
                                 </PopularMatchesSection>
                             </div>
                             <div className="home-section">
-                                <PopularMatchesSection title="ТЕНІС ПОПУЛЯРНЕ" icon={tIcon}>
+                                <PopularMatchesSection title="БАСКЕТБОЛ ПОПУЛЯРНЕ" icon={tIcon}>
                                     {tennisGroups.map((g) => (
                                         <CountryLeagueBlock
                                             key={`${g.country}-${g.league}`}

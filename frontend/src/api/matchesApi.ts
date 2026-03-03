@@ -1,20 +1,22 @@
-import api from "./axiosConfig";
+import api from "../api/axiosConfig.ts";
+
 
 export type MatchDto = {
     id: number;
-    sportKey: "football" | "tennis" | "basketball" | "volleyball";
-    sportTitle: string;
-    country: string;
-    competition: string;
     homeTeam: string;
     awayTeam: string;
     homeOdd: number;
     awayOdd: number;
-    startTime?: string;
+    startTime: string;
+    status: string;
+    competitionId: number;
+    country: string;
+    competition: string;
+    sportKey: string;
     isLive: boolean;
 };
 
-type ApiMatchDto = {
+type RawMatch = {
     id: number;
     externalId: string;
     team1: string;
@@ -34,67 +36,41 @@ type ApiMatchDto = {
     isManual: boolean;
 };
 
-const sportKeyFromSportId = (
-    sportId: number
-): MatchDto["sportKey"] => {
-    switch (sportId) {
-        case 2:
-            return "football";
-        case 4:
-            return "tennis";
-        case 3:
-            return "basketball";
-        case 1:
-            return "volleyball";
-        default:
-            return "football";
-    }
+const COMPETITION_META: Record<number, { country: string; competition: string; sportKey: string }> = {
+    2: { country: "Англія", competition: "Premier League", sportKey: "football" },
+    3: { country: "Європа", competition: "Ліга Чемпіонів", sportKey: "football" },
+    4: { country: "США", competition: "NBA", sportKey: "basketball" },
+    6: { country: "Іспанія", competition: "La Liga", sportKey: "football" },
+    7: { country: "Італія", competition: "Serie A", sportKey: "football" },
+    8: { country: "Німеччина", competition: "Bundesliga", sportKey: "football" },
+    9: { country: "Франція", competition: "Ligue 1", sportKey: "football" },
 };
 
-const sportTitleFromKey = (key: MatchDto["sportKey"]) => {
-    switch (key) {
-        case "football":
-            return "ФУТБОЛ";
-        case "tennis":
-            return "ТЕНІС";
-        case "basketball":
-            return "БАСКЕТБОЛ";
-        case "volleyball":
-            return "ВОЛЕЙБОЛ";
-    }
-};
-
-const toTimeHHmm = (iso: string) => {
-    const d = new Date(iso);
-    const hh = String(d.getHours()).padStart(2, "0");
-    const mm = String(d.getMinutes()).padStart(2, "0");
-    return `${hh}:${mm}`;
-};
-
-const isLiveByStatus = (status: string) => {
-    const s = (status || "").toLowerCase();
-    return s.includes("live") || s.includes("inplay") || s.includes("in_play") || s.includes("playing");
+const mapRawMatch = (raw: RawMatch): MatchDto => {
+    const meta = COMPETITION_META[raw.competitionId] ?? {
+        country: raw.competition.country,
+        competition: raw.competition.name,
+        sportKey: "other",
+    };
+    return {
+        id: raw.id,
+        homeTeam: raw.team1,
+        awayTeam: raw.team2,
+        homeOdd: raw.odds1,
+        awayOdd: raw.odds2,
+        startTime: raw.startTime,
+        status: raw.status,
+        competitionId: raw.competitionId,
+        isLive: raw.status === "Live",
+        ...meta,
+    };
 };
 
 export const getPopularMatches = async (): Promise<MatchDto[]> => {
-    const res = await api.get<ApiMatchDto[]>("/matches");
-
-    return res.data.map((m) => {
-        const sportKey = sportKeyFromSportId(m.competition?.sportId ?? 0);
-        const live = isLiveByStatus(m.status);
-
-        return {
-            id: m.id,
-            sportKey,
-            sportTitle: sportTitleFromKey(sportKey),
-            country: m.competition?.country ?? "—",
-            competition: m.competition?.name ?? "—",
-            homeTeam: m.team1,
-            awayTeam: m.team2,
-            homeOdd: m.odds1,
-            awayOdd: m.odds2,
-            startTime: live ? undefined : toTimeHHmm(m.startTime),
-            isLive: live,
-        };
-    });
+    const ids = [2, 3, 4, 6, 7, 8, 9];
+    const results = await Promise.all(
+        ids.map((id) => api.get(`/matches?competitionId=${id}`))
+    );
+    const raw: RawMatch[] = results.flatMap((r) => r.data);
+    return raw.map(mapRawMatch);
 };
