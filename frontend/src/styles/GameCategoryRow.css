@@ -1,0 +1,31 @@
+.gameCatRow{
+    display:grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap:20px;
+}
+
+.gameCatRow__btn{
+    height: 90px;
+    border-radius: 16px;
+    background: #1e1e1e;
+    border: 0;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding: 0 16px;
+    cursor:pointer;
+}
+
+.gameCatRow__icon{
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+}
+
+.gameCatRow__text{
+    font-size: 18px;
+    font-weight: 700;
+    background: linear-gradient(179.71deg, #fff, #e6e7e8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}

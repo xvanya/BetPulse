@@ -1,0 +1,16 @@
+.tileRow{
+    display:grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.tileRow__tile{
+    height: 320px;
+    border-radius: 16px;
+    background: #1e1e1e;
+}
+
+@media (max-width: 1200px){
+    .tileRow{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .tileRow__tile{ height: 260px; }
+}

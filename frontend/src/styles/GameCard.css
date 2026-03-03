@@ -1,16 +1,17 @@
-.game-card {
+.gameCard{
     width: 100%;
     border-radius: 16px;
     background-color: #1e1e1e;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     padding: 16px;
     gap: 20px;
+    box-sizing: border-box;
     font-family: Poppins;
 }
 
-.live-badge{
+.gameCard__live{
     width: 120px;
     border-radius: 15px;
     background: linear-gradient(179.71deg, #ff4747, #a80608);
@@ -21,42 +22,64 @@
     box-sizing:border-box;
 }
 
-.live-text{
+.gameCard__liveText{
     font-size: 24px;
-    font-family: Poppins;
     background: linear-gradient(179.71deg, #fff, #e6e7e8);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
-.teams-wrapper {
-    width: 100%;
-    display: flex;
+.gameCard__time{
+    width: 120px;
+    border-radius: 15px;
+    background: linear-gradient(179.71deg, #fff, #e6e7e8);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 2px 10px;
+    box-sizing:border-box;
+}
+
+.gameCard__timeText{
+    font-size: 24px;
+    color: #000;
+    -webkit-text-fill-color: #000;
+}
+
+.gameCard__right{
+    width: 360px;
+    display:flex;
     flex-direction: column;
     gap: 12px;
 }
 
-.team-row {
-    display: flex;
+.gameCard__row{
+    display:flex;
+    align-items:center;
     justify-content: space-between;
-    align-items: center;
+    gap: 20px;
 }
 
-.team-name {
-    color: white;
-    font-size: 18px;
+.gameCard__team{
+    font-size: 24px;
+    background: linear-gradient(179.71deg, #fff, #e6e7e8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
-.odd-box {
+.gameCard__odd{
     width: 120px;
     border-radius: 15px;
     background: linear-gradient(179.71deg, #fff, #e6e7e8);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display:flex;
+    align-items:center;
+    justify-content:center;
     padding: 2px 10px;
-    box-sizing: border-box;
+    box-sizing:border-box;
+}
+
+.gameCard__oddText{
     font-size: 24px;
-    font-family: Poppins;
     color: #000;
+    -webkit-text-fill-color: #000;
 }

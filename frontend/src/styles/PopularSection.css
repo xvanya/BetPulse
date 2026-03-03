@@ -1,0 +1,25 @@
+.popularSection{
+    width: 100%;
+    margin-top: 40px;
+    font-family: Poppins;
+    color: #fff;
+}
+
+.popularSection__titleRow{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-align: left;
+}
+
+.popularSection__icon{
+    width: 44px;
+    height: 44px;
+    object-fit: cover;
+}
+
+.popularSection__title{
+    margin: 0;
+    font-size: 36px;
+    font-weight: 700;
+}
