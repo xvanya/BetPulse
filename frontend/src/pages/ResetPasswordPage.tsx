@@ -1,5 +1,6 @@
 import { useState, type FC } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import api from '../api/axiosConfig';
 import './ResetPasswordPage.css';
 
@@ -19,9 +20,18 @@ const ResetPasswordPage: FC = () => {
     const [isSuccess, setIsSuccess] = useState(false);
 
     const handleResetPassword = async () => {
-        if (!token || !email) return alert("Недійсне посилання для відновлення!");
-        if (newPassword !== confirmPassword) return alert("Паролі не співпадають!");
-        if (newPassword.length < 6) return alert("Мінімум 6 символів");
+        if (!token || !email) {
+            toast.error("Недійсне посилання для відновлення! 🔗");
+            return;
+        }
+        if (newPassword !== confirmPassword) {
+            toast.warning("Паролі не співпадають! 🤫");
+            return;
+        }
+        if (newPassword.length < 6) {
+            toast.warning("Мінімум 6 символів 🔐");
+            return;
+        }
 
         setIsProcessing(true);
         try {
@@ -30,10 +40,11 @@ const ResetPasswordPage: FC = () => {
                 token: token,
                 newPassword: newPassword
             });
+            toast.success("Пароль успішно оновлено! 🎉");
             setIsSuccess(true);
         } catch (error) {
             console.error(error); // 👈 Вирішує проблему з ESLint
-            alert("Помилка зміни паролю. Можливо, посилання застаріло.");
+            toast.error("Помилка зміни паролю. Можливо, посилання застаріло ❌");
         } finally {
             setIsProcessing(false);
         }

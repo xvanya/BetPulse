@@ -1,6 +1,7 @@
 import { useState, type FC, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
+import { toast } from 'react-toastify';
 import api from '../api/axiosConfig';
 import './LoginPage.css';
 
@@ -41,6 +42,7 @@ const LoginPage: FC = () => {
             localStorage.setItem('userRole', role);
             localStorage.setItem('userEmail', email);
 
+            toast.success("Вхід успішний! Вітаємо 👋");
             navigate('/');
         } catch (error) {
             const err = error as AxiosError;
@@ -48,19 +50,23 @@ const LoginPage: FC = () => {
             if (err.response?.data) {
                 errorMessage = typeof err.response.data === 'string' ? err.response.data : JSON.stringify(err.response.data);
             }
-            alert(errorMessage);
+            toast.error(errorMessage);
         }
     };
 
     // Відправка запиту на бекенд для скидання паролю
     const handleSendCode = async () => {
-        if (!forgotEmail) return alert("Введіть email");
+        if (!forgotEmail) {
+            toast.warning("Введіть email 📧");
+            return;
+        }
         setIsProcessing(true);
         try {
             await api.post('/auth/forgot-password', { email: forgotEmail });
+            toast.success("Код надіслано! Перевірте пошту ✉️");
             setForgotStep('sent');
         } catch {
-            alert("Помилка відправки. Перевірте email.");
+            toast.error("Помилка відправки. Перевірте email. ❌");
         } finally {
             setIsProcessing(false);
         }

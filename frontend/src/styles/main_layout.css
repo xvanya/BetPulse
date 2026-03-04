@@ -135,3 +135,40 @@ html, body, #root {
     scrollbar-width: thin;
     scrollbar-color: #373737 #141414;
 }
+
+/* --- ЗБІЛЬШЕННЯ РОЗМІРУ ТОСТІВ --- */
+.Toastify__toast-container {
+    width: 480px !important;
+}
+
+.Toastify__toast {
+    padding: 16px 24px !important;
+    min-height: 80px !important;
+    font-size: 18px !important;
+    border-radius: 12px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6) !important;
+    background-color: #1a1a1a !important;
+    color: #fff !important;
+}
+
+.Toastify__toast-body {
+    font-size: 16px !important;
+    line-height: 1.5 !important;
+    font-family: 'Poppins', sans-serif !important;
+}
+
+.Toastify__toast-icon {
+    width: 28px !important;
+    height: 28px !important;
+}
+
+.Toastify__close-button {
+    width: 24px !important;
+    height: 24px !important;
+    align-self: center !important;
+    color: #888 !important;
+}
+
+.Toastify__close-button:hover {
+    color: #fff !important;
+}
