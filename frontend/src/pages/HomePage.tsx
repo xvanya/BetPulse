@@ -188,7 +188,7 @@ const HomePage = () => {
                         <SectionTitle title="НОВІ ІГРИ" icon={pokerIcon} />
                         <TileRow
                             items={[
-                                { image: nw1, title: "nw1" },
+                                { image: nw1, title:"BoxOfRa", route:"/games/box-of-ra" },
                                 { image: nw2, title: "nw2" },
                                 { image: nw3, title: "nw3" },
                                 { image: nw4, title: "nw4" },
@@ -198,7 +198,7 @@ const HomePage = () => {
                     </div>
 
                     <div className="home-section">
-                        <SectionTitle title="ЛАЙВ-КАЗИНО" icon={rouletteIcon} />
+                        <SectionTitle title="ЛАЙВ-КАЗИНО" icon={pokerIcon} />
                         <TileRow
                             items={[
                                 { image: nw6, title: "nw6" },
@@ -211,7 +211,7 @@ const HomePage = () => {
                     </div>
 
                     <div className="home-section">
-                        <SectionTitle title="ПОПУЛЯРНІ ІГРИ" icon={slotsIcon} />
+                        <SectionTitle title="ПОПУЛЯРНІ ІГРИ" icon={pokerIcon} />
                         <TileRow
                             items={[
                                 { image: nw2, title: "popular2" },
