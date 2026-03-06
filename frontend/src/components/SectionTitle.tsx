@@ -2,18 +2,14 @@ import "../styles/SectionTitle.css";
 
 type Props = {
     title: string;
-    iconSrc?: string;
+    icon?: string;
 };
 
-const SectionTitle = ({ title, iconSrc }: Props) => {
+const SectionTitle = ({ title, icon }: Props) => {
     return (
-        <div className="sectionTitle">
-            {iconSrc ? (
-                <img className="sectionTitle__icon" src={iconSrc} alt="" />
-            ) : (
-                <span className="sectionTitle__dot" />
-            )}
-            <h3 className="sectionTitle__text">{title}</h3>
+        <div className="section-title">
+            {icon && <img src={icon} className="section-title__icon" alt={title} />}
+            <b className="b">{title}</b>
         </div>
     );
 };

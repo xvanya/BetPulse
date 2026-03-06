@@ -1,14 +1,15 @@
-.pl{
+.pl {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: flex-end;
     gap: 40px;
-    font-family: Poppins;
+    text-align: left;
+    font-family: Poppins, sans-serif;
     color: #fff;
 }
 
-.pl__header{
+.pl__header {
     width: 100%;
     display: flex;
     align-items: center;
@@ -17,12 +18,16 @@
     box-sizing: border-box;
 }
 
-.pl__title{
+.pl__title {
+    position: relative;
     font-size: 36px;
+    font-family: Poppins, sans-serif;
+    color: #fff;
+    text-align: left;
     margin: 0;
 }
 
-.pl__grid{
+.pl__grid {
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -30,7 +35,7 @@
     padding: 0;
 }
 
-.pl__row{
+.pl__row {
     width: 100%;
     display: flex;
     align-items: center;
@@ -40,21 +45,41 @@
     box-sizing: border-box;
 }
 
-.pl__btn{
+.pl__btn {
     width: 420px;
     height: 80px;
     border-radius: 16px;
-    background: #1e1e1e;
-    border: 0;
+    background-color: #1e1e1e;
+    border: none;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    padding: 0;
+    appearance: none;
+    -webkit-appearance: none;
 }
 
-.pl__btnText{
-    font-size: 32px;
-    background: linear-gradient(180deg, #fff, #e6e7e8);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+.pl__btn .pl__btnText {
+    position: relative !important;
+    display: inline-block !important;
+    font-size: 32px !important;
+    font-family: Poppins, sans-serif !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+    text-align: center !important;
+    color: transparent !important;
+    background: linear-gradient(180deg, #fff, #e6e7e8) !important;
+    background-clip: text !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+}
+
+.pl__btn span,
+.pl__btn b {
+    font-family: Poppins, sans-serif;
+}
+
+.pl__btn:hover {
+    background-color: #252525;
 }

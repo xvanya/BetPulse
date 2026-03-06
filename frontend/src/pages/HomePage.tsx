@@ -17,6 +17,15 @@ import CountryLeagueBlock from "../components/CountryLeagueBlock";
 import { getPopularMatches } from "../api/matchesApi";
 import type { MatchDto } from "../api/matchesApi";
 import InfoFooterBlock from "../components/InfoFooterBlock";
+import nw1 from "../assets/icons/nw1.png";
+import nw2 from "../assets/icons/nw2.png";
+import nw3 from "../assets/icons/nw3.png";
+import nw4 from "../assets/icons/nw4.png";
+import nw5 from "../assets/icons/nw5.png";
+import nw6 from "../assets/icons/nw6.png";
+import nw7 from "../assets/icons/nw7.png";
+import nw8 from "../assets/icons/nw8.png";
+import nw9 from "../assets/icons/nw9.png";
 
 type BlockItem = {
     id: number;
@@ -41,18 +50,23 @@ const groupByCountryLeague = (matches: MatchDto[]): Group[] => {
         if (!map.has(key)) {
             map.set(key, { country: m.country, league: m.competition, items: [] });
         }
+
         map.get(key)!.items.push({
             id: m.id,
             homeTeam: m.homeTeam,
             awayTeam: m.awayTeam,
             homeOdd: m.homeOdd,
             awayOdd: m.awayOdd,
-            time: m.isLive ? undefined : new Date(m.startTime).toLocaleTimeString("uk-UA", {
-                hour: "2-digit",
-                minute: "2-digit",
-            }),
+            time:
+                m.isLive || !m.startTime
+                    ? undefined
+                    : new Date(m.startTime).toLocaleTimeString("uk-UA", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                    }),
         });
     }
+
     return Array.from(map.values()).map((g) => ({
         ...g,
         items: g.items.slice(0, 3),
@@ -74,11 +88,10 @@ const pickFootballGroupsLikeFigma = (groups: Group[]) => {
     const picked: Group[] = [];
     if (england) picked.push(england);
     if (spain && spain !== england) picked.push(spain);
+
     if (picked.length >= 2) return picked.slice(0, 2);
     return groups.slice(0, 2);
 };
-
-
 
 const HomePage = () => {
     const [popularMatches, setPopularMatches] = useState<MatchDto[]>([]);
@@ -95,6 +108,7 @@ const HomePage = () => {
                 setPopularLoading(false);
             }
         };
+
         fetchPopular();
     }, []);
 
@@ -104,24 +118,28 @@ const HomePage = () => {
         return pickFootballGroupsLikeFigma(groups);
     }, [popularMatches]);
 
-    const tennisGroups = useMemo<Group[]>(() => {
+    const basketballGroups = useMemo<Group[]>(() => {
         const basketball = popularMatches.filter((m) => m.sportKey === "basketball");
         const groups = groupByCountryLeague(basketball);
         return groups.slice(0, 2);
     }, [popularMatches]);
+
     return (
         <div className="home-page">
             <div className="container-fluid p-0">
                 <div className="carousel-section home-wide">
                     <Carousel />
                 </div>
+
                 <div className="container home-content mt-4">
                     <div className="home-section">
                         <QuickCategories />
                     </div>
+
                     <div className="home-section">
                         <PopularLeagues />
                     </div>
+
                     {popularLoading ? (
                         <p className="mt-4">Loading popular matches...</p>
                     ) : (
@@ -138,43 +156,71 @@ const HomePage = () => {
                                     ))}
                                 </PopularMatchesSection>
                             </div>
+
                             <div className="home-section">
                                 <PopularMatchesSection title="БАСКЕТБОЛ ПОПУЛЯРНЕ" icon={tIcon}>
-                                    {tennisGroups.map((g) => (
+                                    {basketballGroups.map((g) => (
                                         <CountryLeagueBlock
                                             key={`${g.country}-${g.league}`}
                                             country={g.country}
                                             league={g.league}
-                                            items={g.items}/>
+                                            items={g.items}
+                                        />
                                     ))}
                                 </PopularMatchesSection>
                             </div>
                         </>
                     )}
+
                     <div className="home-section">
                         <SectionTitle title="ВИБРАНІ ІГРИ" />
                         <GameCategoryRow
                             items={[
-                                { label: "ПОКЕР", iconSrc: pokerIcon, route: "/catalog?game=poker" },
-                                { label: "РУЛЕТКА", iconSrc: rouletteIcon, route: "/catalog?game=roulette" },
-                                { label: "СЛОТИ", iconSrc: slotsIcon, route: "/catalog?game=slots" },
-                                { label: "БЛЕКДЖЕК", iconSrc: blackjackIcon, route: "/catalog?game=blackjack" },
+                                { label: "ПОКЕР", iconSrc: pokerIcon, route: "/games/poker" },
+                                { label: "РУЛЕТКА", iconSrc: rouletteIcon, route: "/games/roulette" },
+                                { label: "СЛОТИ", iconSrc: slotsIcon, route: "/games/slots" },
+                                { label: "БЛЕКДЖЕК", iconSrc: blackjackIcon, route: "/games/blackjack" },
                             ]}
                         />
                     </div>
+
                     <div className="home-section">
-                        <SectionTitle title="НОВІ ІГРИ" />
-                        <TileRow count={5} />
+                        <SectionTitle title="НОВІ ІГРИ" icon={pokerIcon} />
+                        <TileRow
+                            items={[
+                                { image: nw1, title: "nw1" },
+                                { image: nw2, title: "nw2" },
+                                { image: nw3, title: "nw3" },
+                                { image: nw4, title: "nw4" },
+                                { image: nw5, title: "nw5" },
+                            ]}
+                        />
                     </div>
 
                     <div className="home-section">
-                        <SectionTitle title="ЛАЙВ-КАЗИНО" />
-                        <TileRow count={5} />
+                        <SectionTitle title="ЛАЙВ-КАЗИНО" icon={rouletteIcon} />
+                        <TileRow
+                            items={[
+                                { image: nw6, title: "nw6" },
+                                { image: nw7, title: "nw7" },
+                                { image: nw8, title: "nw8" },
+                                { image: nw9, title: "nw9" },
+                                { image: nw4, title: "nw4" },
+                            ]}
+                        />
                     </div>
 
                     <div className="home-section">
-                        <SectionTitle title="ПОПУЛЯРНІ ІГРИ" />
-                        <TileRow count={5} />
+                        <SectionTitle title="ПОПУЛЯРНІ ІГРИ" icon={slotsIcon} />
+                        <TileRow
+                            items={[
+                                { image: nw2, title: "popular2" },
+                                { image: nw5, title: "popular5" },
+                                { image: nw1, title: "popular1" },
+                                { image: nw3, title: "popular3" },
+                                { image: nw7, title: "popular7" },
+                            ]}
+                        />
                     </div>
                 </div>
             </div>

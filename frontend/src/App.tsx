@@ -7,7 +7,7 @@ import SplashScreen from './components/SplashScreen';
 import { BetSlipProvider } from './context/BetSlipContext';
 import BetSlip from './components/BetSlip/BetSlip';
 
-// 👇 1. ДОДАЛИ ІМПОРТИ ДЛЯ СПОВІЩЕНЬ
+
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -25,6 +25,7 @@ import SportsCatalogPage from './pages/SportsCatalogPage';
 import CompetitionDetailsPage from './pages/CompetitionDetailsPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import BetsHistoryPage from './pages/BetsHistoryPage.tsx'
+import GamePlaceholderPage from "./pages/GamePlaceholderPage";
 
 function App() {
     const [isLoading, setIsLoading] = useState(true);
@@ -34,7 +35,6 @@ function App() {
     }
 
     return (
-        /* 👇 Обертаємо всю програму в наш провайдер */
         <BetSlipProvider>
             <BrowserRouter>
                 <Routes>
@@ -48,6 +48,7 @@ function App() {
                         <Route path="/competition/:id" element={<CompetitionDetailsPage />} />
                         <Route path="/reset-password" element={<ResetPasswordPage />} />
                         <Route path="/bets-history" element={<BetsHistoryPage />} />
+                        <Route path="/games/:slug" element={<GamePlaceholderPage />} />
                     </Route>
 
                     <Route path="/admin" element={<AdminLayout />}>
@@ -60,11 +61,7 @@ function App() {
                     </Route>
                 </Routes>
             </BrowserRouter>
-
-            {/* 👇 Додаємо сам купон (він буде висіти поверх усіх сторінок) */}
             <BetSlip />
-
-            {/* 👇 2. ДОДАЛИ КОНТЕЙНЕР ДЛЯ ТОСТІВ (темна тема під дизайн сайту) */}
             <ToastContainer position="top-right" autoClose={3000} theme="dark" />
         </BetSlipProvider>
     );

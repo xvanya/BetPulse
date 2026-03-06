@@ -1,16 +1,32 @@
-.tileRow{
-    display:grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+.tile-row {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     gap: 20px;
 }
 
-.tileRow__tile{
+.tile-row__item {
+    width: 320px;
     height: 320px;
     border-radius: 16px;
-    background: #1e1e1e;
+    background-color: #1e1e1e;
+    overflow: hidden;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-@media (max-width: 1200px){
-    .tileRow{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .tileRow__tile{ height: 260px; }
+.tile-row__item:hover {
+    transform: translateY(-4px);
+    background-color: #252525;
+    cursor: pointer;
+}
+
+.tile-row__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
