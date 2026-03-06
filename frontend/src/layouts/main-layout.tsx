@@ -86,7 +86,7 @@ const MainLayout = () => {
                 </main>
             </div>
 
-            <footer className="bg-dark text-secondary text-center py-3 border-top border-secondary">
+            <footer className="text-center py-3" style={{ backgroundColor: '#1b1b1b', borderTop: '1px solid #2a2a2a', color: '#aeb5bc' }}>
                 <p className="mb-0">© 2026 BetPulse Diploma Project</p>
             </footer>
         </div>
