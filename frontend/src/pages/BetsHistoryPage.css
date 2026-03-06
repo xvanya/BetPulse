@@ -1,0 +1,176 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+.history-page-container {
+    width: 100%;
+    min-height: 100vh;
+    background-color: #101010;
+    font-family: 'Poppins', sans-serif;
+    color: #fff;
+    padding: 50px 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.history-header {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin-bottom: 40px;
+}
+
+.history-title {
+    color: #fee000;
+    font-size: 36px;
+    font-weight: 700;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-back-profile {
+    position: absolute;
+    left: 0;
+    background: #1a1a1a;
+    color: #fff;
+    border: 1px solid #373737;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Poppins', sans-serif;
+}
+
+.btn-back-profile:hover {
+    background: #fee000;
+    color: #000;
+    border-color: #fee000;
+}
+
+.history-content {
+    width: 100%;
+    max-width: 1200px;
+}
+
+.history-loading, .history-empty {
+    text-align: center;
+    font-size: 22px;
+    color: #aeb5bc;
+    margin-top: 50px;
+    padding: 60px;
+    background: #1a1a1a;
+    border-radius: 16px;
+}
+
+/* --- СТИЛІ ТАБЛИЦІ --- */
+.history-table-wrapper {
+    width: 100%;
+    background-color: #1a1a1a;
+    border-radius: 16px;
+    padding: 20px 30px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    border: 1px solid #2a2a2a;
+    overflow-x: auto; /* Дозволяє горизонтальний скрол на мобільних */
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+/* Заголовки колонок */
+.history-table th {
+    color: #aeb5bc;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 20px 15px;
+    border-bottom: 2px solid #373737;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Комірки */
+.history-table td {
+    padding: 20px 15px;
+    font-size: 16px;
+    color: #fff;
+    border-bottom: 1px solid #2a2a2a;
+    vertical-align: middle;
+}
+
+/* Ховер ефект для рядків */
+.history-table tbody tr {
+    transition: background-color 0.2s;
+}
+
+.history-table tbody tr:hover {
+    background-color: #242424;
+}
+
+/* Прибираємо нижню лінію в останнього рядка */
+.history-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Специфічні стилі для деяких колонок */
+.history-td-id {
+    color: #888;
+    font-weight: 600;
+}
+
+.history-td-date {
+    color: #ccc;
+    font-size: 14px;
+}
+
+.history-choice {
+    color: #fee000 !important;
+    font-size: 18px !important;
+    font-weight: 700;
+}
+
+.history-win {
+    color: #4ade80 !important;
+    font-weight: 600;
+}
+
+/* Статуси */
+.history-status {
+    font-size: 13px;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-block;
+}
+
+.history-status-win, .history-status-won { background-color: rgba(40, 167, 69, 0.15); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.3); }
+.history-status-loss, .history-status-lost { background-color: rgba(220, 53, 69, 0.15); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.3); }
+.history-status-pending, .history-status-active { background-color: rgba(254, 224, 0, 0.15); color: #fee000; border: 1px solid rgba(254, 224, 0, 0.3); }
+
+/* Адаптивність */
+@media (max-width: 768px) {
+    .history-header {
+        flex-direction: column;
+        gap: 20px;
+    }
+    .btn-back-profile {
+        position: relative;
+        align-self: flex-start;
+    }
+    .history-title {
+        font-size: 28px;
+        text-align: center;
+    }
+    .history-table-wrapper {
+        padding: 10px; /* Менші відступи на телефоні */
+    }
+}

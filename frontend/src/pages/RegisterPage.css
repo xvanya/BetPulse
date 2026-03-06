@@ -1,67 +1,55 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 
-/* --- ГОЛОВНИЙ КОНТЕЙНЕР --- */
 .register-page {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(16, 16, 16, 0.7); /* напівпрозорий чорний */
+    background-color: rgba(16, 16, 16, 0.7);
     font-family: 'Poppins', sans-serif;
     z-index: 100;
-
     overflow-y: auto;
-
     display: flex;
     justify-content: center;
     align-items: flex-start;
     padding-top: 50px;
     padding-bottom: 50px;
-
-    /* Блюр для фону */
     backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px); /* для Safari */
+    -webkit-backdrop-filter: blur(10px);
 }
 
-
-/* --- КАРТКА (Фіксований розмір) --- */
 .register-card {
-    /* ТОЧНІ РОЗМІРИ З FIGMA */
-    width: 516px;
-    height: 828.5px;
-    flex-shrink: 0; /* Забороняємо стискатися */
-
+    width: 600px;
+    min-height: 950px;
+    flex-shrink: 0;
     background-color: #1E1E1E;
     border-radius: 20px;
-    padding: 45px;
-
-    /* Flex для розподілу елементів */
+    padding: 60px;
     display: flex;
     flex-direction: column;
     align-items: center;
-
     position: relative;
     box-shadow: 0 10px 40px rgba(0,0,0,0.5);
 }
 
-/* Верхній рядок (BP і Хрестик) */
 .card-top-row {
     width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
 .bp-logo-small {
     font-family: sans-serif;
     font-style: italic;
     font-weight: 900;
-    font-size: 28px;
+    font-size: 36px;
     color: #FEE000;
     letter-spacing: -1px;
 }
+
 .bp-logo-small::first-letter {
     color: white;
 }
@@ -69,55 +57,53 @@
 .close-icon {
     color: #888;
     cursor: pointer;
-    font-size: 24px;
+    font-size: 30px;
     transition: 0.2s;
 }
+
 .close-icon:hover {
     color: white;
 }
 
-/* Заголовок */
 .register-title {
     font-weight: 700;
-    font-size: 24px;
+    font-size: 32px;
     color: #FEE000;
-    margin-bottom: 40px; /* Більший відступ як на макеті */
+    margin-bottom: 50px;
     text-align: center;
 }
 
-/* Поля вводу */
 .input-group {
     display: flex;
     flex-direction: column;
-    gap: 20px; /* Відстань між полями */
+    gap: 25px;
     width: 100%;
-    margin-bottom: 25px;
+    margin-bottom: 35px;
 }
 
 .custom-input {
     width: 100%;
-    height: 50px;
+    height: 60px;
     background-color: #FFFFFF;
-    border-radius: 5px;
+    border-radius: 8px;
     border: none;
-    padding: 0 20px;
-    font-size: 14px;
-    color: #000000; /* Чорний текст */
+    padding: 0 25px;
+    font-size: 18px;
+    color: #000000;
     outline: none;
 }
 
-/* Чекбокс */
 .checkbox-group {
     display: flex;
     gap: 15px;
     align-items: flex-start;
-    margin-bottom: 40px;
+    margin-bottom: 50px;
     width: 100%;
 }
 
 .custom-checkbox {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     cursor: pointer;
     accent-color: #FEE000;
     flex-shrink: 0;
@@ -126,79 +112,74 @@
 }
 
 .checkbox-text {
-    font-size: 11px;
+    font-size: 14px;
     line-height: 1.6;
-    color: #FFFFFF; /* Білий текст */
+    color: #FFFFFF;
     text-align: left;
     margin: 0;
     opacity: 0.8;
 }
 
-/* Кнопка Реєстрація */
 .btn-register {
     width: 100%;
-    height: 60px;
+    height: 70px;
     background: linear-gradient(180deg, #FEE000 0%, #D0B907 100%);
-    border-radius: 5px;
-    font-weight: 600;
-    font-size: 20px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 24px;
     color: #000000;
     border: none;
     cursor: pointer;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
-/* Посилання "Вже маєте акаунт" */
 .login-link {
-    font-size: 15px;
+    font-size: 18px;
     color: #FFFFFF;
     font-weight: 600;
     cursor: pointer;
     text-decoration: underline;
 }
 
-/* --- СОЦМЕРЕЖІ (Притискаємо до низу) --- */
 .social-section {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 15px;
-
-    /* 👇 ЦЕ МАГІЯ: Притискає цей блок до самого низу картки */
+    gap: 20px;
     margin-top: auto;
 }
 
 .social-text {
-    font-size: 14px;
+    font-size: 18px;
     color: #FEE000;
     font-weight: 600;
 }
 
 .social-icons {
     display: flex;
-    gap: 12px;
+    gap: 15px;
 }
 
 .social-btn {
-    width: 44px;
-    height: 44px;
+    width: 54px;
+    height: 54px;
     background: linear-gradient(180deg, #FFFFFF 0%, #E6E7E8 100%);
-    border-radius: 5px;
+    border-radius: 8px;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
     border: none;
-    font-size: 22px;
+    font-size: 28px;
     color: black;
 }
 
 .support-link {
-    font-size: 12px;
+    font-size: 16px;
     color: #FFFFFF;
     text-decoration: underline;
     cursor: pointer;
     opacity: 0.7;
-    margin-top: 5px;
+    margin-top: 10px;
 }

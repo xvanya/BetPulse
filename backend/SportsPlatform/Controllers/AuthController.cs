@@ -4,10 +4,11 @@ using Microsoft.IdentityModel.Tokens;
 using SportsPlatform.Data;
 using SportsPlatform.Dtos;
 using SportsPlatform.Domain.Entities;
-using SportsPlatform.Services; 
+using SportsPlatform.Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Google.Apis.Auth; 
 
 namespace SportsPlatform.Controllers;
 
@@ -17,7 +18,7 @@ public class AuthController : ControllerBase
 {
     private readonly AppDbContext _context;
     private readonly IConfiguration _configuration;
-    private readonly EmailService _emailService; 
+    private readonly EmailService _emailService;
 
     public AuthController(AppDbContext context, IConfiguration configuration, EmailService emailService)
     {
@@ -76,6 +77,52 @@ public class AuthController : ControllerBase
         });
     }
 
+    [HttpPost("google-login")]
+    public async Task<ActionResult<object>> GoogleLogin([FromBody] GoogleLoginRequest request)
+    {
+        try
+        {
+            var settings = new GoogleJsonWebSignature.ValidationSettings()
+            {
+                Audience = new List<string>() { "29588120359-ppkbibh856jnf6t5qh5gr4iu7tlu21jq.apps.googleusercontent.com" }
+            };
+
+            var payload = await GoogleJsonWebSignature.ValidateAsync(request.Credential, settings);
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == payload.Email);
+
+            if (user == null)
+            {
+                user = new User
+                {
+                    Email = payload.Email,
+                    Name = payload.Name ?? payload.Email.Split('@')[0],
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword(Guid.NewGuid().ToString() + "A1!"),
+                    Role = "User"
+                };
+
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+            }
+
+            string token = CreateToken(user);
+            return Ok(new
+            {
+                token = token,
+                role = user.Role,
+                email = user.Email,
+                id = user.Id
+            });
+        }
+        catch (InvalidJwtException)
+        {
+            return BadRequest("Недійсний токен Google.");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "Помилка сервера: " + ex.Message);
+        }
+    }
     private string CreateToken(User user)
     {
         List<Claim> claims = new List<Claim>
@@ -106,9 +153,7 @@ public class AuthController : ControllerBase
             return BadRequest("Користувача з такою поштою не знайдено");
         }
 
-        // 1. Генеруємо унікальний токен
         user.ResetToken = Guid.NewGuid().ToString();
-        // 2. Даємо токену "жити" тільки 1 годину
         user.ResetTokenExpiry = DateTime.UtcNow.AddHours(1);
 
         await _context.SaveChangesAsync();
@@ -148,6 +193,11 @@ public class AuthController : ControllerBase
 
         return Ok("Пароль успішно оновлено");
     }
+}
+
+public class GoogleLoginRequest
+{
+    public string Credential { get; set; } = string.Empty;
 }
 
 public class ForgotPasswordRequest

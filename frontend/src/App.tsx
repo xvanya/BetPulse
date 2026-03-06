@@ -24,6 +24,7 @@ import AdminSportsPage from './pages/AdminSportsPage';
 import SportsCatalogPage from './pages/SportsCatalogPage';
 import CompetitionDetailsPage from './pages/CompetitionDetailsPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
+import BetsHistoryPage from './pages/BetsHistoryPage.tsx'
 
 function App() {
     const [isLoading, setIsLoading] = useState(true);
@@ -46,6 +47,7 @@ function App() {
                         <Route path="/catalog" element={<SportsCatalogPage />} />
                         <Route path="/competition/:id" element={<CompetitionDetailsPage />} />
                         <Route path="/reset-password" element={<ResetPasswordPage />} />
+                        <Route path="/bets-history" element={<BetsHistoryPage />} />
                     </Route>
 
                     <Route path="/admin" element={<AdminLayout />}>

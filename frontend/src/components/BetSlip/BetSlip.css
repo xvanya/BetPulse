@@ -1,100 +1,246 @@
-.bet-slip-panel {
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+/* Контейнер на весь екран, щоб перекрити все */
+.bet-slip-overlay {
     position: fixed;
-    bottom: 30px;
-    right: 30px;
-    width: 380px; /* Зробили купон ширшим (було 320px) */
-    background-color: #141414;
-    border: 1px solid #373737;
-    border-radius: 8px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
-    z-index: 9999;
-    font-family: 'Poppins', sans-serif;
-    overflow: hidden;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999; /* Поверх усього сайту */
+    display: flex;
+    justify-content: flex-end; /* Панель буде справа */
 }
 
+/* Темний напівпрозорий фон */
+.bet-slip-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(3px);
+    animation: fadeIn 0.3s ease;
+}
+
+/* Сама бічна панель */
+.bet-slip-sidebar {
+    position: relative;
+    width: 100%;
+    max-width: 420px; /* Широкий, зручний купон */
+    height: 100%;
+    background-color: #141414;
+    border-left: 2px solid #fee000;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+    animation: slideInRight 0.3s ease forwards;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Анімації виїзду */
+@keyframes slideInRight {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Шапка купона */
 .bet-slip-header {
     background-color: #fee000;
-    color: #000;
-    padding: 15px 20px; /* Збільшили відступи */
+    padding: 20px 25px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-weight: 700;
-    font-size: 18px; /* Збільшили заголовок */
 }
 
-.btn-close-slip {
+.bet-slip-header h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 800;
+    color: #000;
+    letter-spacing: 1px;
+}
+
+.bet-slip-close {
     background: none;
     border: none;
+    font-size: 24px;
+    font-weight: bold;
     color: #000;
-    font-size: 28px; /* Збільшили хрестик закриття */
-    line-height: 1;
     cursor: pointer;
+    transition: transform 0.2s;
 }
 
-.bet-slip-body {
+.bet-slip-close:hover {
+    transform: scale(1.2);
+}
+
+/* Контентна частина */
+.bet-slip-content {
+    flex: 1;
+    padding: 30px 25px;
+    overflow-y: auto;
+}
+
+.bet-slip-match {
+    background-color: #1a1a1a;
     padding: 20px;
-    color: #fff;
+    border-radius: 12px;
+    border: 1px solid #373737;
+    margin-bottom: 20px;
+    text-align: center;
 }
 
-.bet-slip-teams {
-    font-size: 16px; /* Збільшили назви команд (було 13px) */
-    color: #aeb5bc;
-    margin-bottom: 15px;
+.match-teams {
+    font-size: 20px;
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.4;
+}
+
+.vs-text {
+    color: #888;
+    font-size: 14px;
+    text-transform: uppercase;
 }
 
 .bet-slip-selection {
     display: flex;
     justify-content: space-between;
-    font-size: 18px; /* Збільшили текст вибору */
-    font-weight: 600;
-    margin-bottom: 20px;
-    border-bottom: 1px solid #373737;
-    padding-bottom: 15px;
+    align-items: center;
+    background-color: #1a1a1a;
+    padding: 15px 20px;
+    border-radius: 12px;
+    border: 1px solid #fee000;
+    margin-bottom: 30px;
 }
 
-.bet-slip-odds {
+.selection-label {
+    font-size: 18px;
+    color: #aeb5bc;
+}
+
+.selection-choice {
     color: #fee000;
-    font-size: 20px; /* Зробили сам коефіцієнт ще більшим */
+    font-weight: 700;
+    font-size: 22px;
+    margin-left: 10px;
+}
+
+.selection-odds {
+    font-size: 26px;
+    font-weight: 800;
+    color: #fff;
+}
+
+/* Ввід суми */
+.bet-slip-input-group label {
+    display: block;
+    color: #aeb5bc;
+    font-size: 14px;
+    margin-bottom: 10px;
 }
 
 .bet-slip-input {
     width: 100%;
-    background-color: #212529;
-    border: 1px solid #3a414b;
+    background-color: #242424;
+    border: 2px solid #373737;
     color: #fff;
-    border-radius: 6px;
-    padding: 12px 15px;
-    font-size: 16px; /* Збільшили шрифт у полі вводу суми */
-    margin-bottom: 20px;
+    font-size: 28px;
+    font-weight: 700;
+    padding: 15px 20px;
+    border-radius: 12px;
     outline: none;
+    transition: border-color 0.2s;
+    font-family: 'Poppins', sans-serif;
+    box-sizing: border-box;
 }
 
 .bet-slip-input:focus {
     border-color: #fee000;
 }
 
-.bet-slip-footer {
+/* Швидкі кнопки */
+.bet-slip-quick-amounts {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    margin-bottom: 30px;
+}
+
+.bet-slip-quick-amounts button {
+    flex: 1;
+    background-color: #1a1a1a;
+    color: #fff;
+    border: 1px solid #373737;
+    padding: 10px 0;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.bet-slip-quick-amounts button:hover {
+    background-color: #373737;
+    color: #fee000;
+    border-color: #fee000;
+}
+
+/* Підсумок */
+.bet-slip-summary {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
-    font-size: 16px; /* Збільшили текст виграшу */
+    font-size: 18px;
+    color: #fff;
+    padding-top: 20px;
+    border-top: 1px dashed #373737;
 }
 
-.btn-place-bet {
+.summary-win {
+    font-size: 28px;
+    font-weight: 800;
+    color: #4ade80; /* Приємний зелений для виграшу */
+}
+
+/* Футер з кнопкою */
+.bet-slip-footer {
+    padding: 25px;
+    background-color: #1a1a1a;
+    border-top: 1px solid #373737;
+}
+
+.btn-submit-bet {
     width: 100%;
-    background: linear-gradient(179.71deg, #fff, #e6e7e8);
+    background: linear-gradient(180deg, #FEE000 0%, #D0B907 100%);
     color: #000;
     border: none;
-    padding: 14px; /* Зробили кнопку вищою */
-    border-radius: 6px;
-    font-weight: 700;
-    font-size: 16px; /* Збільшили текст на кнопці */
+    padding: 20px;
+    border-radius: 12px;
+    font-size: 20px;
+    font-weight: 800;
+    font-family: 'Poppins', sans-serif;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    box-shadow: 0 5px 15px rgba(254, 224, 0, 0.2);
 }
 
-.btn-place-bet:hover {
-    background: #d1d1d1;
+.btn-submit-bet:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(254, 224, 0, 0.4);
+}
+
+.btn-submit-bet:disabled {
+    background: #373737;
+    color: #666;
+    box-shadow: none;
+    cursor: not-allowed;
+    transform: none;
 }

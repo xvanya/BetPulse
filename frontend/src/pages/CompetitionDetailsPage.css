@@ -1,5 +1,5 @@
 .details-container {
-    background-color: #000000;
+    background-color: #101010;
     min-height: 100vh;
     padding-left: 95px !important;
     padding-right: 20px;
@@ -111,4 +111,52 @@
 .odds-value {
     font-size: 15px;
     font-weight: 700;
+}
+
+/* Підсвітка вибраного коефіцієнта */
+.btn-odds.selected-odd {
+    background-color: #fee000;
+    border-color: #fee000;
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(254, 224, 0, 0.3);
+}
+
+.btn-odds.selected-odd .odds-label,
+.btn-odds.selected-odd .odds-value {
+    color: #000; /* Чорний текст на жовтому фоні */
+    font-weight: 700;
+}
+
+/* Обгортка для нової кнопки */
+.place-bet-wrapper {
+    display: flex;
+    justify-content: flex-end; /* Притискаємо кнопку вправо */
+}
+
+/* Сама кнопка "Зробити ставку" */
+.btn-place-bet {
+    background: linear-gradient(180deg, #FEE000 0%, #D0B907 100%);
+    color: #000;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-place-bet:hover:not(:disabled) {
+    opacity: 0.9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(254, 224, 0, 0.3);
+}
+
+.btn-place-bet:disabled {
+    background: #2a2a2a;
+    color: #666;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }

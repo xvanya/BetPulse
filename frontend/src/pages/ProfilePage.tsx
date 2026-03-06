@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 import api from '../api/axiosConfig';
@@ -12,35 +12,20 @@ interface UserProfile {
     balance?: number;
 }
 
-type Bet = {
-    id: number;
-    matchId: number;
-    choice: string;
-    amount: number;
-    odd: number;
-    potentialWin: number;
-    status: string;
-    betDate: string;
-};
-
 const ProfilePage = () => {
     const navigate = useNavigate();
     const [user, setUser] = useState<UserProfile | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [bets, setBets] = useState<Bet[]>([]);
 
-    // Стейти для імені
     const [showNameModal, setShowNameModal] = useState(false);
     const [newName, setNewName] = useState('');
     const [isSavingName, setIsSavingName] = useState(false);
 
-    // Стейти для email
     const [showEmailModal, setShowEmailModal] = useState(false);
     const [newEmail, setNewEmail] = useState('');
     const [isSavingEmail, setIsSavingEmail] = useState(false);
 
-    // Стейти для пароля
     const [showPasswordModal, setShowPasswordModal] = useState(false);
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
@@ -60,7 +45,6 @@ const ProfilePage = () => {
                     localStorage.removeItem('token');
                     navigate('/login');
                 } else {
-                    console.error(err);
                     setError('Не вдалося завантажити профіль.');
                 }
             } finally {
@@ -69,7 +53,6 @@ const ProfilePage = () => {
         };
 
         fetchProfile();
-        api.get('/bets').then(r => setBets(r.data)).catch(console.error);
     }, [navigate]);
 
     const handleLogout = () => {
@@ -77,7 +60,6 @@ const ProfilePage = () => {
         navigate('/');
     };
 
-    // --- ЛОГІКА ЗМІНИ ІМЕНІ ---
     const handleUpdateName = async () => {
         if (!newName.trim()) return;
         setIsSavingName(true);
@@ -86,15 +68,13 @@ const ProfilePage = () => {
             if (user) setUser({ ...user, name: newName });
             setShowNameModal(false);
             toast.success("Ім'я успішно змінено");
-        } catch (err) {
-            console.error(err);
+        } catch {
             toast.error("Не вдалося змінити ім'я");
         } finally {
             setIsSavingName(false);
         }
     };
 
-    // --- ЛОГІКА ЗМІНИ EMAIL ---
     const handleUpdateEmail = async () => {
         if (!newEmail.trim() || !newEmail.includes('@')) {
             return toast.warning("Введіть коректний email");
@@ -109,15 +89,13 @@ const ProfilePage = () => {
             if (user) setUser({ ...user, email: newEmail });
             setShowEmailModal(false);
             toast.success("Email успішно змінено");
-        } catch (err) {
-            console.error(err);
+        } catch {
             toast.error("Не вдалося змінити email. Можливо, він вже використовується.");
         } finally {
             setIsSavingEmail(false);
         }
     };
 
-    // --- ЛОГІКА ЗМІНИ ПАРОЛЯ ---
     const handleUpdatePassword = async () => {
         if (!oldPassword) return toast.warning("Введіть старий пароль");
 
@@ -140,22 +118,21 @@ const ProfilePage = () => {
             setOldPassword('');
             setNewPassword('');
             setConfirmNewPassword('');
-        } catch (err) {
-            console.error(err);
+        } catch {
             toast.error("Помилка! Перевірте правильність старого пароля");
         } finally {
             setIsChangingPwd(false);
         }
     };
 
-    if (loading) return <div className="profile-wrapper">Завантаження...</div>;
+    if (loading) return <div className="profile-layout"><div className="profile-message">Завантаження...</div></div>;
 
     if (error) {
         return (
-            <div className="profile-wrapper">
-                <div className="profile-card">
-                    <h3 style={{ color: '#dc3545', marginBottom: '20px' }}>{error}</h3>
-                    <Link to="/" className="btn-home">На головну</Link>
+            <div className="profile-layout">
+                <div className="profile-message error">
+                    <h3>{error}</h3>
+                    <button className="btn-nav" onClick={() => navigate('/')}>На головну</button>
                 </div>
             </div>
         );
@@ -164,159 +141,170 @@ const ProfilePage = () => {
     const avatarLetter = user?.name ? user.name.charAt(0).toUpperCase() : 'U';
 
     return (
-        <div className="profile-wrapper">
-            <div className="profile-card">
-                <div className="profile-avatar">{avatarLetter}</div>
-                <h2 className="profile-name">{user?.name}</h2>
-                <p className="profile-email">{user?.email}</p>
+        <div className="profile-layout">
+            {/* НОВА ОБГОРТКА */}
+            <div className="profile-inner-wrapper">
+                <div className="profile-sidebar">
+                    <div className="sidebar-user-info">
+                        <div className="sidebar-avatar">{avatarLetter}</div>
+                        <h2 className="sidebar-name">{user?.name}</h2>
+                        <p className="sidebar-email">{user?.email}</p>
+                    </div>
 
-                <div className="stats-row">
-                    <div className="stat-item">
-                        <span className="stat-label">Баланс</span>
-                        <span className="stat-value money">
-                            {user?.balance ? user.balance.toFixed(2) : '0.00'} ₴
-                        </span>
+                    <div className="sidebar-navigation">
+                        <button className="btn-nav active" onClick={() => navigate('/profile')}>
+                            Особистий кабінет
+                        </button>
+                        <button className="btn-nav" onClick={() => navigate('/bets-history')}>
+                            Історія ставок
+                        </button>
+                        <button className="btn-nav" onClick={() => navigate('/')}>
+                            На головну
+                        </button>
+                    </div>
+
+                    <div className="sidebar-footer">
+                        <button className="btn-logout-full" onClick={handleLogout}>
+                            Вийти з акаунту
+                        </button>
                     </div>
                 </div>
 
-                <div className="form-group">
-                    <label className="form-label">ID</label>
-                    <input className="form-input" value={user?.id || ''} readOnly />
-                </div>
-                <div className="form-group">
-                    <label className="form-label">Email</label>
-                    <input className="form-input" value={user?.email || ''} readOnly />
-                </div>
+                <div className="profile-main-area">
+                    <h1 className="page-main-title">Мій профіль</h1>
 
-                <div className="bets-history">
-                    <h3 className="bets-title">Історія ставок</h3>
-                    {bets.length === 0 ? (
-                        <p className="bets-empty">Ставок ще немає</p>
-                    ) : (
-                        <div className="bets-list scrollable-bets">
-                            {bets.map((b) => (
-                                <div key={b.id} className="bet-item">
-                                    <div className="bet-row">
-                                        <span className="bet-choice">{b.choice}</span>
-                                        <span className={`bet-status bet-status--${b.status.toLowerCase()}`}>{b.status}</span>
-                                    </div>
-                                    <div className="bet-row">
-                                        <span>Ставка: <b>{b.amount} ₴</b></span>
-                                        <span>Виграш: <b>{b.potentialWin} ₴</b></span>
-                                        <span>Коеф: <b>{b.odd}</b></span>
-                                    </div>
-                                    <div className="bet-date">
-                                        {new Date(b.betDate).toLocaleString("uk-UA")}
-                                    </div>
-                                </div>
-                            ))}
+                    <div className="balance-banner">
+                        <div className="balance-info">
+                            <span className="balance-text">Ваш баланс</span>
+                            <span className="balance-sum">{user?.balance ? user.balance.toFixed(2) : '0.00'} ₴</span>
                         </div>
-                    )}
-                </div>
+                    </div>
 
-                <div className="profile-actions">
-                    <button className="btn-edit" onClick={() => setShowNameModal(true)}>
-                        ✎ Змінити ім'я
-                    </button>
-                    <button className="btn-edit" onClick={() => setShowEmailModal(true)}>
-                        ✎ Змінити email
-                    </button>
-                    <button className="btn-edit" onClick={() => setShowPasswordModal(true)}>
-                        ✎ Змінити пароль
-                    </button>
-                    <Link to="/" className="btn-home">⬅ На головну</Link>
-                    <button className="btn-logout" onClick={handleLogout}>Вийти</button>
+                    <div className="content-section">
+                        <h3 className="section-heading">Особисті дані</h3>
+                        <div className="info-cards-container">
+                            <div className="info-card">
+                                <span className="info-card-label">ID Користувача</span>
+                                <span className="info-card-value">#{user?.id}</span>
+                            </div>
+                            <div className="info-card">
+                                <span className="info-card-label">Електронна пошта</span>
+                                <span className="info-card-value">{user?.email}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="content-section">
+                        <h3 className="section-heading">Налаштування безпеки та профілю</h3>
+                        <div className="settings-cards-container">
+                            <div className="setting-card">
+                                <div className="setting-info">
+                                    <h4>Ім'я користувача</h4>
+                                    <p>{user?.name}</p>
+                                </div>
+                                <button className="btn-change" onClick={() => setShowNameModal(true)}>Змінити</button>
+                            </div>
+
+                            <div className="setting-card">
+                                <div className="setting-info">
+                                    <h4>Електронна пошта</h4>
+                                    <p>{user?.email}</p>
+                                </div>
+                                <button className="btn-change" onClick={() => setShowEmailModal(true)}>Змінити</button>
+                            </div>
+
+                            <div className="setting-card">
+                                <div className="setting-info">
+                                    <h4>Пароль</h4>
+                                    <p>••••••••</p>
+                                </div>
+                                <button className="btn-change" onClick={() => setShowPasswordModal(true)}>Оновити</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+            {/* КІНЕЦЬ НОВОЇ ОБГОРТКИ */}
 
-            {/* Модалка зміни імені */}
             {showNameModal && (
                 <div className="modal-overlay">
-                    <div className="modal-card">
-                        <h3>Зміна імені</h3>
+                    <div className="modal-box">
+                        <h3 className="modal-title">Зміна імені</h3>
                         <input
                             type="text"
-                            className="form-input mb-3"
+                            className="modal-input"
                             value={newName}
                             onChange={(e) => setNewName(e.target.value)}
                             placeholder="Введіть нове ім'я"
                         />
-                        <div className="modal-actions">
-                            <button className="btn-save" onClick={handleUpdateName} disabled={isSavingName}>
+                        <div className="modal-buttons">
+                            <button className="btn-cancel" onClick={() => setShowNameModal(false)}>Скасувати</button>
+                            <button className="btn-confirm" onClick={handleUpdateName} disabled={isSavingName}>
                                 {isSavingName ? 'Збереження...' : 'Зберегти'}
-                            </button>
-                            <button className="btn-cancel" onClick={() => setShowNameModal(false)}>
-                                Скасувати
                             </button>
                         </div>
                     </div>
                 </div>
             )}
 
-            {/* Модалка зміни email */}
             {showEmailModal && (
                 <div className="modal-overlay">
-                    <div className="modal-card">
-                        <h3>Зміна email</h3>
+                    <div className="modal-box">
+                        <h3 className="modal-title">Зміна email</h3>
                         <input
                             type="email"
-                            className="form-input mb-3"
+                            className="modal-input"
                             value={newEmail}
                             onChange={(e) => setNewEmail(e.target.value)}
                             placeholder="Введіть новий email"
                         />
-                        <div className="modal-actions">
-                            <button className="btn-save" onClick={handleUpdateEmail} disabled={isSavingEmail}>
-                                {isSavingEmail ? 'Збереження...' : 'Зберегти'}
-                            </button>
+                        <div className="modal-buttons">
                             <button className="btn-cancel" onClick={() => {
                                 setShowEmailModal(false);
-                                setNewEmail(user?.email || ''); // Скидаємо на поточний при відміні
-                            }}>
-                                Скасувати
+                                setNewEmail(user?.email || '');
+                            }}>Скасувати</button>
+                            <button className="btn-confirm" onClick={handleUpdateEmail} disabled={isSavingEmail}>
+                                {isSavingEmail ? 'Збереження...' : 'Зберегти'}
                             </button>
                         </div>
                     </div>
                 </div>
             )}
 
-            {/* Модалка зміни пароля */}
             {showPasswordModal && (
                 <div className="modal-overlay">
-                    <div className="modal-card">
-                        <h3>Зміна пароля</h3>
+                    <div className="modal-box">
+                        <h3 className="modal-title">Зміна пароля</h3>
                         <input
                             type="password"
-                            className="form-input mb-2"
+                            className="modal-input mb-space"
                             value={oldPassword}
                             onChange={(e) => setOldPassword(e.target.value)}
                             placeholder="Старий пароль"
                         />
                         <input
                             type="password"
-                            className="form-input mb-2"
+                            className="modal-input mb-space"
                             value={newPassword}
                             onChange={(e) => setNewPassword(e.target.value)}
                             placeholder="Новий пароль"
                         />
                         <input
                             type="password"
-                            className="form-input mb-3"
+                            className="modal-input"
                             value={confirmNewPassword}
                             onChange={(e) => setConfirmNewPassword(e.target.value)}
                             placeholder="Підтвердження нового пароля"
                         />
-                        <div className="modal-actions">
-                            <button className="btn-save" onClick={handleUpdatePassword} disabled={isChangingPwd}>
-                                {isChangingPwd ? 'Оновлення...' : 'Оновити пароль'}
-                            </button>
+                        <div className="modal-buttons mt-space">
                             <button className="btn-cancel" onClick={() => {
                                 setShowPasswordModal(false);
                                 setOldPassword('');
                                 setNewPassword('');
                                 setConfirmNewPassword('');
-                            }}>
-                                Скасувати
+                            }}>Скасувати</button>
+                            <button className="btn-confirm" onClick={handleUpdatePassword} disabled={isChangingPwd}>
+                                {isChangingPwd ? 'Оновлення...' : 'Оновити пароль'}
                             </button>
                         </div>
                     </div>

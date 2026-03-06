@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Spinner, Button } from 'react-bootstrap';
+import { toast } from 'react-toastify'; // Додали тости для красивого сповіщення
 import api from '../api/axiosConfig';
-import { useBetSlip } from '../context/BetSlipContext'; // 👈 Додали імпорт контексту
+import { useBetSlip } from '../context/BetSlipContext';
 import './CompetitionDetailsPage.css';
 
 interface Competition {
@@ -25,13 +26,14 @@ interface Match {
 const CompetitionDetailsPage = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-
-    // 👈 Дістаємо функцію setBet з нашого контексту
     const { setBet } = useBetSlip();
 
     const [competition, setCompetition] = useState<Competition | null>(null);
     const [matches, setMatches] = useState<Match[]>([]);
     const [loading, setLoading] = useState(true);
+
+    // Стейт для збереження вибраного результату для кожного матчу
+    const [selectedOdds, setSelectedOdds] = useState<Record<number, { betType: string; odds: number }>>({});
 
     useEffect(() => {
         const fetchData = async () => {
@@ -51,15 +53,29 @@ const CompetitionDetailsPage = () => {
         fetchData();
     }, [id]);
 
-    // 👈 Оновили функцію: тепер вона приймає весь об'єкт match і передає його в купон
-    const handlePlaceBet = (match: Match, betType: string, odds: number) => {
+    // Крок 1: Просто виділяємо коефіцієнт (ще не робимо ставку)
+    const handleSelectOdd = (matchId: number, betType: string, odds: number) => {
+        if (!odds) return;
+        setSelectedOdds(prev => ({
+            ...prev,
+            [matchId]: { betType, odds }
+        }));
+    };
+
+    // Крок 2: Натискання на кнопку "Зробити ставку"
+    const handlePlaceBetSubmit = (match: Match) => {
+        const selected = selectedOdds[match.id];
+        if (!selected) return;
+
         setBet({
             matchId: match.id,
             team1: match.team1,
             team2: match.team2,
-            betType: betType,
-            odds: odds
+            betType: selected.betType,
+            odds: selected.odds
         });
+
+        toast.success("Матч додано в купон! 🎟️");
     };
 
     if (loading) {
@@ -109,20 +125,41 @@ const CompetitionDetailsPage = () => {
                             </div>
                         </div>
 
-                        <div className="odds-container mt-3 mt-md-0">
-                            {/* 👈 Оновили виклик функції: передаємо весь об'єкт match */}
-                            <button className="btn-odds" onClick={() => handlePlaceBet(match, '1', match.odds1)}>
-                                <span className="odds-label">1</span>
-                                <span className="odds-value">{match.odds1?.toFixed(2) || '-'}</span>
-                            </button>
-                            <button className="btn-odds" onClick={() => handlePlaceBet(match, 'X', match.oddsX)}>
-                                <span className="odds-label">X</span>
-                                <span className="odds-value">{match.oddsX?.toFixed(2) || '-'}</span>
-                            </button>
-                            <button className="btn-odds" onClick={() => handlePlaceBet(match, '2', match.odds2)}>
-                                <span className="odds-label">2</span>
-                                <span className="odds-value">{match.odds2?.toFixed(2) || '-'}</span>
-                            </button>
+                        <div className="match-actions">
+                            <div className="odds-container mt-3 mt-md-0">
+                                <button
+                                    className={`btn-odds ${selectedOdds[match.id]?.betType === '1' ? 'selected-odd' : ''}`}
+                                    onClick={() => handleSelectOdd(match.id, '1', match.odds1)}
+                                >
+                                    <span className="odds-label">1</span>
+                                    <span className="odds-value">{match.odds1?.toFixed(2) || '-'}</span>
+                                </button>
+                                <button
+                                    className={`btn-odds ${selectedOdds[match.id]?.betType === 'X' ? 'selected-odd' : ''}`}
+                                    onClick={() => handleSelectOdd(match.id, 'X', match.oddsX)}
+                                >
+                                    <span className="odds-label">X</span>
+                                    <span className="odds-value">{match.oddsX?.toFixed(2) || '-'}</span>
+                                </button>
+                                <button
+                                    className={`btn-odds ${selectedOdds[match.id]?.betType === '2' ? 'selected-odd' : ''}`}
+                                    onClick={() => handleSelectOdd(match.id, '2', match.odds2)}
+                                >
+                                    <span className="odds-label">2</span>
+                                    <span className="odds-value">{match.odds2?.toFixed(2) || '-'}</span>
+                                </button>
+                            </div>
+
+                            {/* Нова кнопка "Зробити ставку" */}
+                            <div className="place-bet-wrapper mt-3">
+                                <button
+                                    className="btn-place-bet"
+                                    disabled={!selectedOdds[match.id]}
+                                    onClick={() => handlePlaceBetSubmit(match)}
+                                >
+                                    Зробити ставку
+                                </button>
+                            </div>
                         </div>
                     </div>
                 ))
