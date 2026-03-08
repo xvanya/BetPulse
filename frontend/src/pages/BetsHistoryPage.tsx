@@ -25,13 +25,11 @@ const BetsHistoryPage: FC = () => {
                 const response = await api.get('/bets');
 
                 if (Array.isArray(response.data)) {
-                    // Змінено сортування: від найстарішої до найновішої
                     const sortedBets = response.data.sort((a, b) =>
                         new Date(a.betDate).getTime() - new Date(b.betDate).getTime()
                     );
                     setBets(sortedBets);
                 } else {
-                    console.warn("Отримано не масив:", response.data);
                     setBets([]);
                 }
             } catch (error) {
@@ -48,7 +46,7 @@ const BetsHistoryPage: FC = () => {
         <div className="history-page-container">
             <div className="history-header">
                 <button className="btn-back-profile" onClick={() => navigate('/profile')}>
-                    ⬅ Назад до профілю
+                    Назад до профілю
                 </button>
                 <h2 className="history-title">Моя історія ставок</h2>
             </div>
@@ -63,7 +61,7 @@ const BetsHistoryPage: FC = () => {
                         <table className="history-table">
                             <thead>
                             <tr>
-                                <th>ID</th>
+                                <th>№</th>
                                 <th>Дата та час</th>
                                 <th>Вибір</th>
                                 <th>Коефіцієнт</th>
@@ -73,9 +71,9 @@ const BetsHistoryPage: FC = () => {
                             </tr>
                             </thead>
                             <tbody>
-                            {bets.map((b) => (
+                            {bets.map((b, index) => (
                                 <tr key={b.id}>
-                                    <td className="history-td-id">#{b.id}</td>
+                                    <td className="history-td-id">{index + 1}</td>
                                     <td className="history-td-date">
                                         {b.betDate ? new Date(b.betDate).toLocaleString("uk-UA") : '—'}
                                     </td>

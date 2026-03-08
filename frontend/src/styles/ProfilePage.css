@@ -401,3 +401,172 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* --- КНОПКИ В БАНЕРІ БАЛАНСУ --- */
+.balance-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.btn-deposit-action {
+    background-color: #fee000;
+    color: #000;
+    font-weight: 700;
+    padding: 10px 25px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.btn-deposit-action:hover { background-color: #fff; }
+
+.btn-withdraw-action {
+    background-color: transparent;
+    color: #fff;
+    font-weight: 600;
+    padding: 10px 25px;
+    border-radius: 8px;
+    border: 1px solid #373737;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.btn-withdraw-action:hover { background-color: #1a1a1a; border-color: #aeb5bc; }
+
+
+/* --- КАСА (ДЕПОЗИТ ТА ВИВЕДЕННЯ) --- */
+.cashier-header {
+    background-color: #171717;
+    border-radius: 12px;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    border: 1px solid #222;
+}
+
+.cashier-icon {
+    background-color: #fee000;
+    color: #000;
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+
+.cashier-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 0.5px;
+}
+
+/* Платіжні методи */
+.payment-methods {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.pay-method {
+    flex: 1;
+    background-color: #1c1c1e;
+    border: 1px solid #2c2c2e;
+    color: #fff;
+    padding: 15px 0;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.pay-method.active {
+    background-color: #fff;
+    color: #000;
+    border-color: #fff;
+}
+
+.pay-method:hover:not(.active) {
+    background-color: #2c2c2e;
+}
+
+/* Інформаційні рядки */
+.cashier-info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 20px;
+    background-color: #171717;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.cashier-info-row span:first-child { color: #aeb5bc; }
+.cashier-info-row .cashier-sum { color: #fff; font-weight: 600; }
+.cashier-info-row .cashier-limit-text { color: #f87171; } /* Червоний текст "Не встановлений" */
+
+/* Форма вводу */
+.cashier-form { margin-top: 25px; }
+
+.cashier-inputs-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+    align-items: center;
+}
+
+.cashier-input-wrap { flex: 1; }
+.cashier-input-wrap.small { flex: 0.4; }
+
+.cashier-input {
+    width: 100%;
+    background-color: #171717;
+    border: 1px solid #2c2c2e;
+    color: #fff;
+    padding: 15px 20px;
+    border-radius: 10px;
+    font-size: 16px;
+}
+.cashier-input:focus { border-color: #fee000; outline: none; }
+
+.verified-text {
+    color: #4ade80;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-cashier-submit {
+    width: 100%;
+    max-width: 300px;
+    background-color: #fee000;
+    color: #000;
+    border: none;
+    padding: 15px 20px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: background-color 0.2s;
+}
+.btn-cashier-submit:hover:not(:disabled) { background-color: #fff; }
+.btn-cashier-submit:disabled { opacity: 0.7; cursor: not-allowed; }
+
+.withdraw-help-text {
+    margin-top: 20px;
+    font-size: 12px;
+    color: #6c757d;
+    line-height: 1.6;
+}

@@ -45,10 +45,9 @@ const FavoritesPage = () => {
 
     const removeFavorite = async (id: number) => {
         try {
-            // Видаляємо через новий метод в UsersController
             await api.delete(`/profile/favorites/${id}`);
             setFavorites(prevFavorites => prevFavorites.filter(item => item.id !== id));
-            toast.success("Турнір видалено з улюблених 🗑");
+            toast.success("Турнір видалено з улюблених ");
         } catch (err) {
             console.error("Помилка видалення:", err);
             toast.error("Помилка видалення ");
@@ -108,11 +107,15 @@ const FavoritesPage = () => {
                                     </thead>
                                     <tbody>
                                     {favorites.map(item => (
-                                        <tr key={item.id}>
+                                        <tr
+                                            key={item.id}
+
+                                            onClick={() => navigate(`/competition/${item.competitionId}`)}
+                                        >
                                             <td className="ps-4">
-                                                    <span className="match-teams" style={{ color: '#fee000' }}>
-                                                        {item.competitionName}
-                                                    </span>
+                                                <span className="match-teams">
+                                                    {item.competitionName}
+                                                </span>
                                             </td>
                                             <td>
                                                 <span className="custom-badge date-badge">{item.country || 'Міжнародний'}</span>
@@ -120,7 +123,10 @@ const FavoritesPage = () => {
                                             <td className="pe-4 text-end">
                                                 <button
                                                     className="btn-delete-icon"
-                                                    onClick={() => removeFavorite(item.id)}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation(); // Зупиняє клік, щоб не відбувся перехід на сторінку
+                                                        removeFavorite(item.id);
+                                                    }}
                                                     title="Видалити з улюблених"
                                                 >
                                                     🗑️

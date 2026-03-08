@@ -143,7 +143,7 @@ public class UsersController : ControllerBase
     {
         var userId = GetCurrentUserId();
         var favorites = await _context.Favorites
-            .Include(f => f.Competition) // Підтягуємо дані про змагання
+            .Include(f => f.Competition) 
             .Where(f => f.UserId == userId)
             .Select(f => new
             {
@@ -228,6 +228,40 @@ public class UsersController : ControllerBase
         return Ok(new { message = "Користувача оновлено" });
     }
 
+    // симуляція вводу/виводу коштів
+
+    [HttpPost("deposit")]
+    public async Task<IActionResult> Deposit([FromBody] CashierRequest request)
+    {
+        if (request.Amount <= 0) return BadRequest("Сума має бути більшою за 0");
+
+        var userId = GetCurrentUserId();
+        var user = await _context.Users.FindAsync(userId);
+        if (user == null) return NotFound("Користувача не знайдено");
+
+        user.Balance += request.Amount; // Симулюємо успішне зарахування
+
+        await _context.SaveChangesAsync();
+        return Ok(new { message = "Кошти успішно зараховано!", newBalance = user.Balance });
+    }
+
+    [HttpPost("withdraw")]
+    public async Task<IActionResult> Withdraw([FromBody] CashierRequest request)
+    {
+        if (request.Amount < 200) return BadRequest("Мінімальна сума виведення: 200 грн");
+
+        var userId = GetCurrentUserId();
+        var user = await _context.Users.FindAsync(userId);
+        if (user == null) return NotFound("Користувача не знайдено");
+
+        if (user.Balance < request.Amount) return BadRequest("Недостатньо коштів на балансі");
+
+        user.Balance -= request.Amount; // Симулюємо успішне зняття
+
+        await _context.SaveChangesAsync();
+        return Ok(new { message = "Заявка на виведення успішно оброблена!", newBalance = user.Balance });
+    }
+
 }
 
 
@@ -253,3 +287,9 @@ public class ChangePasswordRequest
     public string OldPassword { get; set; } = string.Empty;
     public string NewPassword { get; set; } = string.Empty;
 }
+
+public class CashierRequest
+{
+    public decimal Amount { get; set; }
+}
+

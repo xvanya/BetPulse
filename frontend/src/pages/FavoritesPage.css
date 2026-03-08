@@ -16,8 +16,8 @@
 }
 
 .table-pulse thead th {
-    background-color: #1f2329 !important;
-    color: #8c939b !important;
+    background-color: #1a1a1a !important;
+    color: #aeb5bc !important;
     font-weight: 500;
     font-size: 14px;
     text-transform: uppercase;
@@ -35,14 +35,20 @@
     font-family: 'Poppins', sans-serif;
 }
 
+/* Рядок стає клікабельним */
+.table-pulse tbody tr {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
 .table-pulse tbody tr:hover td {
-    background-color: #1f2329 !important;
+    background-color: #242424 !important;
 }
 
 .custom-badge.date-badge {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: #222222; /* Нейтральний фон замість прозорого */
     color: #aeb5bc;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid #333333;
     padding: 6px 12px;
     border-radius: 6px;
     font-size: 13px;
@@ -53,15 +59,13 @@
 .match-teams {
     font-weight: 600;
     font-size: 16px;
-    color: #fff;
+    color: #dcdcdc;
     font-family: 'Poppins', sans-serif;
+    transition: color 0.2s;
 }
 
-.match-vs {
-    color: #fee000;
-    margin: 0 8px;
-    font-size: 14px;
-    font-family: 'Poppins', sans-serif;
+.table-pulse tbody tr:hover .match-teams {
+    color: #fff;
 }
 
 .btn-delete-icon {
