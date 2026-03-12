@@ -6,20 +6,20 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// безпечний CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
+    options.AddPolicy("FrontendPolicy", policy =>
     {
-        policy.AllowAnyOrigin() 
-              .AllowAnyMethod()  
-              .AllowAnyHeader(); 
+        policy.WithOrigins("http://localhost:5173") // <--- Отут додали закриваючу дужку!
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials();
     });
 });
 
 builder.Services.AddControllers();
 //builder.Services.AddEndpointsApiExplorer();
-
-
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string not found");
@@ -29,6 +29,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString);
 });
 
+builder.Services.AddHttpClient();
 builder.Services.AddScoped<SportService>();
 builder.Services.AddScoped<CompetitionService>();
 builder.Services.AddScoped<PromotionService>();
@@ -64,7 +65,8 @@ app.UseSwaggerUI(options =>
 
 app.UseHttpsRedirection();
 
-app.UseCors("AllowAll");
+// 🔥 Використовуємо нашу нову політику замість "AllowAll"
+app.UseCors("FrontendPolicy");
 
 app.UseAuthentication();
 app.UseAuthorization();

@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging; 
 using SportsPlatform.Services;
 
 namespace SportsPlatform.Controllers;
@@ -11,10 +12,11 @@ namespace SportsPlatform.Controllers;
 public class BetsController : ControllerBase
 {
     private readonly BetService _service;
-
-    public BetsController(BetService service)
+    private readonly ILogger<BetsController> _logger; 
+    public BetsController(BetService service, ILogger<BetsController> logger)
     {
         _service = service;
+        _logger = logger;
     }
 
     [HttpPost]
@@ -24,14 +26,19 @@ public class BetsController : ControllerBase
         {
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-            // Передаємо оновлені дані в сервіс
             var bet = await _service.PlaceBetAsync(userId, request.MatchId, request.Choice, request.Amount, request.Odd);
 
             return Ok(new { message = "Ставку прийнято!", betId = bet.Id, potentialWin = bet.PotentialWin });
         }
-        catch (Exception ex)
+        catch (ArgumentException ex) 
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (Exception ex) 
+        {
+            _logger.LogError(ex, "Критична помилка при створенні ставки.");
+
+            return StatusCode(500, new { message = "Сталася внутрішня помилка сервера. Спробуйте пізніше." });
         }
     }
 

@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Spinner, Button } from 'react-bootstrap';
-import { toast } from 'react-toastify'; // Додали тости для красивого сповіщення
 import api from '../api/axiosConfig';
 import { useBetSlip } from '../context/BetSlipContext';
 import './CompetitionDetailsPage.css';
@@ -32,7 +31,6 @@ const CompetitionDetailsPage = () => {
     const [matches, setMatches] = useState<Match[]>([]);
     const [loading, setLoading] = useState(true);
 
-    // Стейт для збереження вибраного результату для кожного матчу
     const [selectedOdds, setSelectedOdds] = useState<Record<number, { betType: string; odds: number }>>({});
 
     useEffect(() => {
@@ -53,7 +51,6 @@ const CompetitionDetailsPage = () => {
         fetchData();
     }, [id]);
 
-    // Крок 1: Просто виділяємо коефіцієнт (ще не робимо ставку)
     const handleSelectOdd = (matchId: number, betType: string, odds: number) => {
         if (!odds) return;
         setSelectedOdds(prev => ({
@@ -62,11 +59,11 @@ const CompetitionDetailsPage = () => {
         }));
     };
 
-    // Крок 2: Натискання на кнопку "Зробити ставку"
     const handlePlaceBetSubmit = (match: Match) => {
         const selected = selectedOdds[match.id];
         if (!selected) return;
 
+        // Просто передаємо дані в купон, без зайвих сповіщень
         setBet({
             matchId: match.id,
             team1: match.team1,
@@ -74,8 +71,6 @@ const CompetitionDetailsPage = () => {
             betType: selected.betType,
             odds: selected.odds
         });
-
-        toast.success("Матч додано в купон! 🎟️");
     };
 
     if (loading) {
@@ -150,7 +145,6 @@ const CompetitionDetailsPage = () => {
                                 </button>
                             </div>
 
-                            {/* Нова кнопка "Зробити ставку" */}
                             <div className="place-bet-wrapper mt-3">
                                 <button
                                     className="btn-place-bet"

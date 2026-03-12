@@ -25,7 +25,7 @@ const BetSlip: FC = () => {
 
     const handleSubmit = async () => {
         if (!amount || Number(amount) <= 0) {
-            toast.warning("Введіть суму ставки! 💰");
+            toast.warning("Введіть суму ставки!");
             return;
         }
 
@@ -38,11 +38,11 @@ const BetSlip: FC = () => {
                 odd: bet.odds
             });
 
-            toast.success("Ставку успішно прийнято! Нехай щастить! 🍀");
+            toast.success("Ставку успішно прийнято!");
             handleClose();
         } catch (error) {
             console.error(error);
-            toast.error("Помилка при оформленні ставки ❌");
+            toast.error("Помилка при оформленні ставки");
         } finally {
             setIsSubmitting(false);
         }

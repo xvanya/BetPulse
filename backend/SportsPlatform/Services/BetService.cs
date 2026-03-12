@@ -15,37 +15,45 @@ public class BetService
 
     public async Task<Bet> PlaceBetAsync(int userId, int matchId, string choice, decimal amount, decimal odd)
     {
-        // 1. Шукаємо користувача
-        var user = await _context.Users.FindAsync(userId);
-        if (user == null) throw new Exception("Користувача не знайдено");
+        await using var transaction = await _context.Database.BeginTransactionAsync();
 
-        // 2. ПЕРЕВІРЯЄМО БАЛАНС
-        if (user.Balance < amount) throw new Exception("Недостатньо коштів на балансі");
-
-        var match = await _context.Matches.FindAsync(matchId);
-        if (match == null) throw new Exception("Матч не знайдено");
-
-        // 3. ЗНІМАЄМО ГРОШІ
-        user.Balance -= amount;
-
-        var bet = new Bet
+        try
         {
-            UserId = userId,
-            MatchId = matchId,
-            Choice = choice,
-            Amount = amount,
-            Odd = odd,
-            Status = "Pending",
-            PotentialWin = amount * odd,
-            BetDate = DateTime.UtcNow
-        };
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null) throw new ArgumentException("Користувача не знайдено");
 
-        _context.Bets.Add(bet);
+            if (user.Balance < amount) throw new ArgumentException("Недостатньо коштів на балансі");
 
-        // SaveChangesAsync збереже і нову ставку, і новий баланс юзера одночасно!
-        await _context.SaveChangesAsync();
+            var match = await _context.Matches.FindAsync(matchId);
+            if (match == null) throw new ArgumentException("Матч не знайдено");
 
-        return bet;
+            user.Balance -= amount;
+
+            var bet = new Bet
+            {
+                UserId = userId,
+                MatchId = matchId,
+                Choice = choice,
+                Amount = amount,
+                Odd = odd,
+                Status = "Pending",
+                PotentialWin = amount * odd,
+                BetDate = DateTime.UtcNow
+            };
+
+            _context.Bets.Add(bet);
+
+            await _context.SaveChangesAsync();
+
+            await transaction.CommitAsync();
+
+            return bet;
+        }
+        catch (Exception)
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
     }
 
     public async Task<List<Bet>> GetUserBetsAsync(int userId)

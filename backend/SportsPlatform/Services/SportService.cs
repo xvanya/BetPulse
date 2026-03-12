@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SportsPlatform.Data;
 using SportsPlatform.Domain.Entities;
-using SportsPlatform.Dtos; 
+using SportsPlatform.Dtos;
 
 namespace SportsPlatform.Services;
 
@@ -25,23 +25,21 @@ public class SportService
 
     public async Task<List<SportSidebarDto>> GetSidebarDataAsync()
     {
-        var sports = await _context.Sports
-            .Include(s => s.Competitions)
-            .OrderBy(s => s.Id) 
-            .ToListAsync();
-
-        var result = sports.Select(s => new SportSidebarDto
-        {
-            Id = s.Id,
-            Name = s.Name,
-            Competitions = s.Competitions.Select(c => new CompetitionSidebarDto
+        var result = await _context.Sports
+            .OrderBy(s => s.Id)
+            .Select(s => new SportSidebarDto
             {
-                Id = c.Id,
-                Name = c.Name,
-                Country = c.Country ?? "Світ",
-                Count = _context.Matches.Count(m => m.CompetitionId == c.Id)
-            }).ToList()
-        }).ToList();
+                Id = s.Id,
+                Name = s.Name,
+                Competitions = s.Competitions.Select(c => new CompetitionSidebarDto
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Country = c.Country ?? "Світ",
+                    Count = _context.Matches.Count(m => m.CompetitionId == c.Id)
+                }).ToList()
+            })
+            .ToListAsync(); 
 
         return result;
     }
@@ -57,7 +55,7 @@ public class SportService
     public async Task UpdateAsync(int id, string newName)
     {
         var sport = await _context.Sports.FindAsync(id);
-        if (sport == null) throw new Exception("Спорт не знайдено");
+        if (sport == null) throw new ArgumentException("Спорт не знайдено");
 
         sport.Name = newName;
         await _context.SaveChangesAsync();
@@ -66,7 +64,7 @@ public class SportService
     public async Task DeleteAsync(int id)
     {
         var sport = await _context.Sports.FindAsync(id);
-        if (sport == null) throw new Exception("Спорт не знайдено");
+        if (sport == null) throw new ArgumentException("Спорт не знайдено");
 
         _context.Sports.Remove(sport);
         await _context.SaveChangesAsync();
