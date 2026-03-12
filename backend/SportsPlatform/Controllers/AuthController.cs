@@ -8,7 +8,7 @@ using SportsPlatform.Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Google.Apis.Auth; 
+using Google.Apis.Auth;
 
 namespace SportsPlatform.Controllers;
 
@@ -66,6 +66,19 @@ public class AuthController : ControllerBase
         if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
             return BadRequest("Невірний пароль.");
 
+        if (user.IsBanned)
+        {
+            if (user.BanEndDate == null)
+                return BadRequest("Ваш акаунт заблоковано назавжди.");
+
+            if (user.BanEndDate > DateTime.UtcNow)
+                return BadRequest($"Ваш акаунт заблоковано до {user.BanEndDate.Value.ToLocalTime():dd.MM.yyyy HH:mm}.");
+
+            user.IsBanned = false;
+            user.BanEndDate = null;
+            await _context.SaveChangesAsync();
+        }
+
         string token = CreateToken(user);
 
         return Ok(new
@@ -105,6 +118,19 @@ public class AuthController : ControllerBase
                 await _context.SaveChangesAsync();
             }
 
+            if (user.IsBanned)
+            {
+                if (user.BanEndDate == null)
+                    return BadRequest("Ваш акаунт заблоковано назавжди.");
+
+                if (user.BanEndDate > DateTime.UtcNow)
+                    return BadRequest($"Ваш акаунт заблоковано до {user.BanEndDate.Value.ToLocalTime():dd.MM.yyyy HH:mm}.");
+
+                user.IsBanned = false;
+                user.BanEndDate = null;
+                await _context.SaveChangesAsync();
+            }
+
             string token = CreateToken(user);
             return Ok(new
             {
@@ -123,6 +149,7 @@ public class AuthController : ControllerBase
             return StatusCode(500, "Помилка сервера: " + ex.Message);
         }
     }
+
     private string CreateToken(User user)
     {
         List<Claim> claims = new List<Claim>

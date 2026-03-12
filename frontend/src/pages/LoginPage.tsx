@@ -30,7 +30,6 @@ const LoginPage: React.FC = () => {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    // Виправили FormEvent на правильний React.FormEvent
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
@@ -44,20 +43,20 @@ const LoginPage: React.FC = () => {
             localStorage.setItem('userRole', role);
             localStorage.setItem('userEmail', email);
 
-            toast.success("Вхід успішний! Вітаємо ");
+            toast.success("Вхід успішний! Вітаємо");
             navigate('/');
         } catch (error) {
-            console.error(error); // Виправили 'error is defined but never used'
+            console.error(error);
             const err = error as AxiosError;
             let errorMessage = "Невірний логін або пароль";
             if (err.response?.data) {
                 errorMessage = typeof err.response.data === 'string' ? err.response.data : JSON.stringify(err.response.data);
             }
+            // Виводимо повідомлення про бан або неправильний пароль
             toast.error(errorMessage);
         }
     };
 
-    // Виправили any на конкретний тип
     const handleGoogleAuth = async (credentialResponse: { credential?: string }) => {
         try {
             const response = await api.post<LoginResponse>('/auth/google-login', {
@@ -66,27 +65,33 @@ const LoginPage: React.FC = () => {
             localStorage.setItem('token', response.data.token);
             localStorage.setItem('userRole', response.data.role);
             localStorage.setItem('userEmail', response.data.email);
-            toast.success("Вхід через Google успішний! ");
+            toast.success("Вхід через Google успішний!");
             navigate('/');
         } catch (error) {
-            console.error(error); // Виправили 'error is defined but never used'
-            toast.error("Помилка авторизації через Google");
+            console.error(error);
+            const err = error as AxiosError;
+            let errorMessage = "Помилка авторизації через Google";
+            // Якщо сервер повернув повідомлення про бан, дістаємо його
+            if (err.response?.data) {
+                errorMessage = typeof err.response.data === 'string' ? err.response.data : JSON.stringify(err.response.data);
+            }
+            toast.error(errorMessage);
         }
     };
 
     const handleSendCode = async () => {
         if (!forgotEmail) {
-            toast.warning("Введіть email ");
+            toast.warning("Введіть email");
             return;
         }
         setIsProcessing(true);
         try {
             await api.post('/auth/forgot-password', { email: forgotEmail });
-            toast.success("Код надіслано! Перевірте пошту ");
+            toast.success("Код надіслано! Перевірте пошту");
             setForgotStep('sent');
         } catch (error) {
-            console.error(error); // Виправили 'error is defined but never used'
-            toast.error("Помилка відправки. Перевірте email. ");
+            console.error(error);
+            toast.error("Помилка відправки. Перевірте email.");
         } finally {
             setIsProcessing(false);
         }

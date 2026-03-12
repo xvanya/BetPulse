@@ -5,15 +5,23 @@ import api from '../api/axiosConfig';
 import type { User } from '../types';
 import './AdminUsersPage.css';
 
+// Розширюємо тип User локально, щоб не лазити в types.ts
+type AdminUser = User & {
+    isBanned?: boolean;
+    banEndDate?: string | null;
+};
+
 const AdminUsersPage = () => {
-    const [users, setUsers] = useState<User[]>([]);
+    const [users, setUsers] = useState<AdminUser[]>([]);
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [editId, setEditId] = useState<number | null>(null);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
-        role: ''
+        role: '',
+        banType: 'none', // 'none' | 'days' | 'permanent'
+        banDays: 1
     });
 
     const fetchUsers = () => {
@@ -27,12 +35,31 @@ const AdminUsersPage = () => {
         fetchUsers();
     }, []);
 
-    const handleEditClick = (user: User) => {
+    const handleEditClick = (user: AdminUser) => {
         setEditId(user.id);
+
+        let initialBanType = 'none';
+        let initialBanDays = 1;
+
+        if (user.isBanned) {
+            if (!user.banEndDate) {
+                initialBanType = 'permanent';
+            } else {
+                const endDate = new Date(user.banEndDate);
+                if (endDate > new Date()) {
+                    initialBanType = 'days';
+                    const diffTime = Math.abs(endDate.getTime() - new Date().getTime());
+                    initialBanDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                }
+            }
+        }
+
         setFormData({
             name: user.name,
             email: user.email,
-            role: user.role ?? 'User'
+            role: user.role ?? 'User',
+            banType: initialBanType,
+            banDays: initialBanDays
         });
         setShowModal(true);
     };
@@ -40,7 +67,7 @@ const AdminUsersPage = () => {
     const handleClose = () => {
         setShowModal(false);
         setEditId(null);
-        setFormData({ name: '', email: '', role: '' });
+        setFormData({ name: '', email: '', role: '', banType: 'none', banDays: 1 });
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -48,14 +75,36 @@ const AdminUsersPage = () => {
     };
 
     const handleSave = async () => {
+        let isBanned = false;
+        let banEndDate: string | null = null;
+
+        if (formData.banType === 'permanent') {
+            isBanned = true;
+        } else if (formData.banType === 'days') {
+            isBanned = true;
+            const end = new Date();
+            end.setDate(end.getDate() + Number(formData.banDays));
+            banEndDate = end.toISOString(); // Форматуємо дату для C#
+        }
+
+        const payload = {
+            name: formData.name,
+            email: formData.email,
+            role: formData.role,
+            isBanned,
+            banEndDate
+        };
+
         try {
-            await api.put(`/users/${editId}`, formData);
-            toast.success("Дані користувача успішно оновлено! ");
+            await api.put(`/users/${editId}`, payload);
+            toast.success("Дані користувача успішно оновлено!");
             fetchUsers();
             handleClose();
         } catch (err) {
             console.error(err);
-            toast.error("Помилка оновлення даних ");
+            // Приводимо помилку до потрібного типу безпечно
+            const error = err as { response?: { data?: string } };
+            toast.error(error.response?.data || "Помилка оновлення даних");
         }
     };
 
@@ -84,22 +133,43 @@ const AdminUsersPage = () => {
                         </tr>
                         </thead>
                         <tbody>
-                        {users.map(user => (
-                            <tr key={user.id}>
-                                <td className="ps-4 user-id-cell">#{user.id}</td>
-                                <td className="user-name-cell">{user.name}</td>
-                                <td>{user.email}</td>
-                                <td>
-                                    <span className={`custom-badge ${user.role === 'Admin' ? 'admin' : 'user'}`}>
-                                        {user.role}
-                                    </span>
-                                </td>
-                                <td><span className="custom-badge active">Активний</span></td>
-                                <td className="pe-4">
-                                    <button className="btn-edit-link" onClick={() => handleEditClick(user)}>Ред.</button>
-                                </td>
-                            </tr>
-                        ))}
+                        {users.map(user => {
+                            // Логіка відображення статусу в таблиці
+                            let statusText = "Активний";
+                            let badgeClass = "active";
+
+                            if (user.isBanned) {
+                                badgeClass = "banned";
+                                if (user.banEndDate) {
+                                    const endDate = new Date(user.banEndDate);
+                                    if (endDate > new Date()) {
+                                        statusText = `Бан до ${endDate.toLocaleDateString('uk-UA')}`;
+                                    } else {
+                                        statusText = "Активний"; // Бан вже минув
+                                        badgeClass = "active";
+                                    }
+                                } else {
+                                    statusText = "Бан назавжди";
+                                }
+                            }
+
+                            return (
+                                <tr key={user.id}>
+                                    <td className="ps-4 user-id-cell">#{user.id}</td>
+                                    <td className="user-name-cell">{user.name}</td>
+                                    <td>{user.email}</td>
+                                    <td>
+                                        <span className={`custom-badge ${user.role === 'Admin' ? 'admin' : 'user'}`}>
+                                            {user.role}
+                                        </span>
+                                    </td>
+                                    <td><span className={`custom-badge ${badgeClass}`}>{statusText}</span></td>
+                                    <td className="pe-4">
+                                        <button className="btn-edit-link" onClick={() => handleEditClick(user)}>Ред.</button>
+                                    </td>
+                                </tr>
+                            );
+                        })}
                         </tbody>
                     </Table>
                 </div>
@@ -145,6 +215,36 @@ const AdminUsersPage = () => {
                                 <option value="Admin">Admin</option>
                             </Form.Select>
                         </Form.Group>
+
+                        <Form.Group className="mb-3">
+                            <Form.Label className="admin-form-label" style={{ color: '#f87171' }}>Статус акаунту</Form.Label>
+                            <Form.Select
+                                name="banType"
+                                value={formData.banType}
+                                onChange={handleChange}
+                                className="admin-form-input"
+                                style={formData.banType !== 'none' ? { borderColor: '#dc3545', color: '#ff6b6b' } : {}}
+                            >
+                                <option value="none">🟢 Активний</option>
+                                <option value="days">🕒 Заблокувати на час</option>
+                                <option value="permanent">⛔ Заблокувати назавжди</option>
+                            </Form.Select>
+                        </Form.Group>
+
+                        {formData.banType === 'days' && (
+                            <Form.Group className="mb-3">
+                                <Form.Label className="admin-form-label">Кількість днів блокування</Form.Label>
+                                <Form.Control
+                                    name="banDays"
+                                    value={formData.banDays}
+                                    onChange={handleChange}
+                                    type="number"
+                                    min="1"
+                                    className="admin-form-input"
+                                />
+                            </Form.Group>
+                        )}
+
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
