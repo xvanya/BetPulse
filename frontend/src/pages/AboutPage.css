@@ -1,0 +1,153 @@
+.about-page {
+    background: #101010;
+    min-height: 100vh;
+    color: #fff;
+    padding: 40px 0 80px;
+    font-family: Poppins, sans-serif;
+}
+
+.about-hero {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto 40px;
+    padding: 0 40px;
+    box-sizing: border-box;
+}
+
+.about-hero__content {
+    border-radius: 28px;
+    padding: 56px;
+    background:
+            radial-gradient(circle at top left, rgba(254, 224, 0, 0.14), transparent 30%),
+            linear-gradient(180deg, #1a1a1a, #141414);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
+.about-hero__badge {
+    display: inline-block;
+    margin-bottom: 18px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #fee000, #d0b907);
+    color: #101010;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.about-hero__title {
+    margin: 0 0 16px;
+    font-size: 56px;
+    line-height: 1.05;
+}
+
+.about-hero__subtitle {
+    max-width: 900px;
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.75;
+    color: #d1d1d1;
+}
+
+.about-section {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto 28px;
+    padding: 0 40px;
+    box-sizing: border-box;
+}
+
+.about-card {
+    background: #1a1a1a;
+    border-radius: 24px;
+    padding: 36px;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.about-card h2 {
+    margin: 0 0 18px;
+    font-size: 32px;
+    color: #fff;
+}
+
+.about-card p {
+    margin: 0 0 14px;
+    font-size: 17px;
+    line-height: 1.8;
+    color: #cfcfcf;
+}
+
+.about-card p:last-child {
+    margin-bottom: 0;
+}
+
+.about-grid {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.about-mini-card {
+    background: #1e1e1e;
+    border-radius: 20px;
+    padding: 28px;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.about-mini-card h3 {
+    margin: 0 0 12px;
+    font-size: 22px;
+    color: #fff;
+}
+
+.about-mini-card p {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.7;
+    color: #c8c8c8;
+}
+
+@media (max-width: 992px) {
+    .about-hero__content {
+        padding: 36px;
+    }
+
+    .about-hero__title {
+        font-size: 42px;
+    }
+
+    .about-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .about-page {
+        padding-top: 24px;
+    }
+
+    .about-hero,
+    .about-section {
+        padding: 0 20px;
+    }
+
+    .about-hero__content,
+    .about-card {
+        padding: 24px;
+    }
+
+    .about-hero__title {
+        font-size: 34px;
+    }
+
+    .about-hero__subtitle,
+    .about-card p {
+        font-size: 15px;
+    }
+
+    .about-card h2 {
+        font-size: 26px;
+    }
+}
