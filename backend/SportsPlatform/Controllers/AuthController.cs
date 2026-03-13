@@ -33,10 +33,8 @@ public class AuthController : ControllerBase
         if (await _context.Users.AnyAsync(u => u.Email == request.Email))
             return BadRequest("Користувач вже існує.");
 
-        // Хешування паролю
         string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
-        // ім'я генерується автоматично
         string generatedName = request.Email.Contains("@")
             ? request.Email.Split('@')[0]
             : "User";

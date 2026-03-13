@@ -44,7 +44,6 @@ public class BetService
             _context.Bets.Add(bet);
 
             await _context.SaveChangesAsync();
-
             await transaction.CommitAsync();
 
             return bet;

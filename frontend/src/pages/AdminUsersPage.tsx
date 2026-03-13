@@ -5,7 +5,6 @@ import api from '../api/axiosConfig';
 import type { User } from '../types';
 import './AdminUsersPage.css';
 
-// Розширюємо тип User локально, щоб не лазити в types.ts
 type AdminUser = User & {
     isBanned?: boolean;
     banEndDate?: string | null;
@@ -20,7 +19,7 @@ const AdminUsersPage = () => {
         name: '',
         email: '',
         role: '',
-        banType: 'none', // 'none' | 'days' | 'permanent'
+        banType: 'none',
         banDays: 1
     });
 
@@ -84,7 +83,7 @@ const AdminUsersPage = () => {
             isBanned = true;
             const end = new Date();
             end.setDate(end.getDate() + Number(formData.banDays));
-            banEndDate = end.toISOString(); // Форматуємо дату для C#
+            banEndDate = end.toISOString();
         }
 
         const payload = {
@@ -102,7 +101,6 @@ const AdminUsersPage = () => {
             handleClose();
         } catch (err) {
             console.error(err);
-            // Приводимо помилку до потрібного типу безпечно
             const error = err as { response?: { data?: string } };
             toast.error(error.response?.data || "Помилка оновлення даних");
         }
@@ -134,7 +132,6 @@ const AdminUsersPage = () => {
                         </thead>
                         <tbody>
                         {users.map(user => {
-                            // Логіка відображення статусу в таблиці
                             let statusText = "Активний";
                             let badgeClass = "active";
 
@@ -145,7 +142,7 @@ const AdminUsersPage = () => {
                                     if (endDate > new Date()) {
                                         statusText = `Бан до ${endDate.toLocaleDateString('uk-UA')}`;
                                     } else {
-                                        statusText = "Активний"; // Бан вже минув
+                                        statusText = "Активний";
                                         badgeClass = "active";
                                     }
                                 } else {
@@ -225,9 +222,9 @@ const AdminUsersPage = () => {
                                 className="admin-form-input"
                                 style={formData.banType !== 'none' ? { borderColor: '#dc3545', color: '#ff6b6b' } : {}}
                             >
-                                <option value="none">🟢 Активний</option>
-                                <option value="days">🕒 Заблокувати на час</option>
-                                <option value="permanent">⛔ Заблокувати назавжди</option>
+                                <option value="none">Активний</option>
+                                <option value="days">Заблокувати на час</option>
+                                <option value="permanent">Заблокувати назавжди</option>
                             </Form.Select>
                         </Form.Group>
 

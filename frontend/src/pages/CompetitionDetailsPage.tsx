@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Spinner, Button } from 'react-bootstrap';
+import { toast } from 'react-toastify';
 import api from '../api/axiosConfig';
 import { useBetSlip } from '../context/BetSlipContext';
 import './CompetitionDetailsPage.css';
@@ -42,13 +43,13 @@ const CompetitionDetailsPage = () => {
                 const matchesRes = await api.get<Match[]>(`/matches?competitionId=${id}`);
                 setMatches(matchesRes.data);
             } catch (error) {
-                console.error("Помилка завантаження даних:", error);
+                console.error(error);
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchData();
+        void fetchData();
     }, [id]);
 
     const handleSelectOdd = (matchId: number, betType: string, odds: number) => {
@@ -63,7 +64,6 @@ const CompetitionDetailsPage = () => {
         const selected = selectedOdds[match.id];
         if (!selected) return;
 
-        // Просто передаємо дані в купон, без зайвих сповіщень
         setBet({
             matchId: match.id,
             team1: match.team1,
@@ -71,6 +71,8 @@ const CompetitionDetailsPage = () => {
             betType: selected.betType,
             odds: selected.odds
         });
+
+        toast.success("Матч додано в купон");
     };
 
     if (loading) {

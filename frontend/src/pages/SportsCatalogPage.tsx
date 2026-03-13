@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Row, Col, Card, Button } from 'react-bootstrap';
 import { AxiosError } from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 import api from '../api/axiosConfig';
 import './SportsCatalogPage.css';
 
@@ -23,24 +22,15 @@ interface Competition {
 const SportsCatalogPage = () => {
     const [competitions, setCompetitions] = useState<Competition[]>([]);
     const [sports, setSports] = useState<Sport[]>([]);
-    const [selectedSport, setSelectedSport] = useState<number | null>(null);
 
-    // ДІСТАЄМО УСІ ПАРАМЕТРИ З ПОСИЛАННЯ
     const [searchParams, setSearchParams] = useSearchParams();
     const searchQuery = searchParams.get('q') || '';
     const searchCountry = searchParams.get('country');
     const searchSportId = searchParams.get('sportId');
 
-    const navigate = useNavigate();
+    const selectedSport = searchSportId ? Number(searchSportId) : null;
 
-    // СИНХРОНІЗУЄМО СТАН КНОПОК З URL
-    useEffect(() => {
-        if (searchSportId) {
-            setSelectedSport(Number(searchSportId));
-        } else {
-            setSelectedSport(null);
-        }
-    }, [searchSportId]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         api.get<Competition[]>('/competitions')
@@ -52,16 +42,10 @@ const SportsCatalogPage = () => {
             .catch(e => console.error(e));
     }, []);
 
-    // 👇 ОНОВЛЕНА ЛОГІКА ФІЛЬТРАЦІЇ (Пошук по назві змагання АБО спорту)
     const filteredCompetitions = competitions.filter(c => {
         const query = searchQuery.toLowerCase();
-
-        // Знаходимо ім'я спорту для поточної картки (або пустий рядок, якщо не знайдено)
         const sportName = sports.find(s => s.id === c.sportId)?.name.toLowerCase() || '';
-
-        // Шукаємо співпадіння АБО в назві ліги, АБО в назві спорту
         const matchesSearch = c.name.toLowerCase().includes(query) || sportName.includes(query);
-
         const matchesSport = selectedSport ? c.sportId === selectedSport : true;
         const matchesCountry = searchCountry ? c.country === searchCountry : true;
 
@@ -88,26 +72,19 @@ const SportsCatalogPage = () => {
         navigate(`/competition/${id}`);
     };
 
-    // Обробник кліку по кнопці "Всі"
     const handleClearFilters = () => {
-        setSelectedSport(null);
-        setSearchParams({}); // Очищаємо URL повністю
+        setSearchParams({});
     };
 
-    // Обробник кліку по спорту
     const handleSelectSport = (sportId: number) => {
-        setSelectedSport(sportId);
         searchParams.set('sportId', sportId.toString());
-        searchParams.delete('country'); // Скидаємо країну, бо ми змінили спорт
+        searchParams.delete('country');
         setSearchParams(searchParams);
     };
 
     return (
         <div className="container-fluid px-4 py-4 catalog-container">
-            <ToastContainer position="bottom-right" autoClose={3000} theme="dark" />
-
             <h2 className="catalog-title">
-                {/* ВИВОДИМО КРАЇНУ В ЗАГОЛОВОК, ЯКЩО ВОНА ВИБРАНА */}
                 {searchQuery ? `РЕЗУЛЬТАТИ ПОШУКУ: "${searchQuery}"` : 'СПОРТИВНІ ПОДІЇ'}
                 {searchCountry && !searchQuery && ` — ${searchCountry}`}
             </h2>

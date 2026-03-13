@@ -52,7 +52,6 @@ const LoginPage: React.FC = () => {
             if (err.response?.data) {
                 errorMessage = typeof err.response.data === 'string' ? err.response.data : JSON.stringify(err.response.data);
             }
-            // Виводимо повідомлення про бан або неправильний пароль
             toast.error(errorMessage);
         }
     };
@@ -71,7 +70,6 @@ const LoginPage: React.FC = () => {
             console.error(error);
             const err = error as AxiosError;
             let errorMessage = "Помилка авторизації через Google";
-            // Якщо сервер повернув повідомлення про бан, дістаємо його
             if (err.response?.data) {
                 errorMessage = typeof err.response.data === 'string' ? err.response.data : JSON.stringify(err.response.data);
             }

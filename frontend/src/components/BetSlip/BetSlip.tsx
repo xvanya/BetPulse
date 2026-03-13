@@ -41,7 +41,6 @@ const BetSlip: FC = () => {
             toast.success("Ставку успішно прийнято!");
             handleClose();
         } catch (error) {
-            console.error(error);
             toast.error("Помилка при оформленні ставки");
         } finally {
             setIsSubmitting(false);

@@ -7,11 +7,9 @@ import SplashScreen from './components/SplashScreen';
 import { BetSlipProvider } from './context/BetSlipContext';
 import BetSlip from './components/BetSlip/BetSlip';
 
-
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-// Pages
 import AboutPage from "./pages/AboutPage";
 import BlackjackPage from "./pages/BlackjackPage";
 import HomePage from './pages/HomePage';
@@ -70,7 +68,7 @@ function App() {
                 </Routes>
             </BrowserRouter>
             <BetSlip />
-            <ToastContainer position="top-right" autoClose={3000} theme="dark" />
+            <ToastContainer position="top-right" autoClose={3000} theme="dark" style={{ zIndex: 999999 }} />
         </BetSlipProvider>
     );
 }
