@@ -29,6 +29,36 @@ const getRandomSymbol = () => {
     return symbols[index];
 };
 
+const getDifferentSymbol = (excludedNames: string[]) => {
+    const available = symbols.filter((s) => !excludedNames.includes(s.name));
+    const index = Math.floor(Math.random() * available.length);
+    return available[index];
+};
+
+const generateHardModeResult = (): SymbolItem[] => {
+    const chance = Math.random();
+
+    if (chance < 0.78) {
+        const first = getRandomSymbol();
+        const second = getDifferentSymbol([first.name]);
+        const third = getDifferentSymbol([first.name, second.name]);
+        return [first, second, third];
+    }
+
+    if (chance < 0.96) {
+        const matched = getRandomSymbol();
+        const other = getDifferentSymbol([matched.name]);
+
+        const patternChance = Math.random();
+        if (patternChance < 0.33) return [matched, matched, other];
+        if (patternChance < 0.66) return [matched, other, matched];
+        return [other, matched, matched];
+    }
+
+    const jackpot = getRandomSymbol();
+    return [jackpot, jackpot, jackpot];
+};
+
 const BoxOfRaPage = () => {
     const [reels, setReels] = useState<SymbolItem[]>([
         getRandomSymbol(),
@@ -45,7 +75,7 @@ const BoxOfRaPage = () => {
     useEffect(() => {
         const fetchProfile = async () => {
             try {
-                const res = await api.get('/profile');
+                const res = await api.get("/profile");
                 setBalance(res.data.balance);
                 setIsBalanceLoaded(true);
             } catch (error) {
@@ -82,7 +112,7 @@ const BoxOfRaPage = () => {
         }
 
         try {
-            const betRes = await api.post('/profile/slot-bet', { amount: bet });
+            const betRes = await api.post("/profile/slot-bet", { amount: bet });
             setBalance(betRes.data.newBalance);
         } catch {
             setMessage("Помилка при знятті ставки");
@@ -99,14 +129,14 @@ const BoxOfRaPage = () => {
         setTimeout(async () => {
             clearInterval(spinInterval);
 
-            const finalReels = [getRandomSymbol(), getRandomSymbol(), getRandomSymbol()];
+            const finalReels = generateHardModeResult();
             setReels(finalReels);
 
             const win = resolveWin(finalReels);
 
             if (win > 0) {
                 try {
-                    const winRes = await api.post('/profile/slot-win', { amount: win });
+                    const winRes = await api.post("/profile/slot-win", { amount: win });
                     setBalance(winRes.data.newBalance);
                     setMessage(`Виграш: +${win}`);
                 } catch {
@@ -200,6 +230,7 @@ const BoxOfRaPage = () => {
                     <h3>Правила</h3>
                     <p>3 однакові символи = множник символу × ставка</p>
                     <p>2 однакові символи = половина множника символу × ставка</p>
+                    <p>Шанси: 78% без виграшу, 18% частковий виграш, 4% повний збіг</p>
                 </div>
             </div>
         </div>
