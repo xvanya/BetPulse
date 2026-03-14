@@ -13,7 +13,8 @@ builder.Services.AddCors(options =>
         policy.WithOrigins(
                 "http://localhost:5173",
                 "https://betpulse-mu.vercel.app/",
-                "https://betpulse-ax6pi32am-xvanyas-projects.vercel.app/"
+                "https://betpulse-ax6pi32am-xvanyas-projects.vercel.app/",
+                "https://betpulse-git-main-xvanyas-projects.vercel.app/"
               )
               .AllowAnyMethod()
               .AllowAnyHeader()
