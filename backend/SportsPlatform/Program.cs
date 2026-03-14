@@ -6,12 +6,14 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// безпечний CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("FrontendPolicy", policy =>
     {
-        policy.WithOrigins("http://localhost:5173") // <--- Отут додали закриваючу дужку!
+        policy.WithOrigins(
+                "http://localhost:5173",
+                "https://betpulse.vercel.app"
+              )
               .AllowAnyMethod()
               .AllowAnyHeader()
               .AllowCredentials();
@@ -19,7 +21,6 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddControllers();
-//builder.Services.AddEndpointsApiExplorer();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string not found");
@@ -35,10 +36,10 @@ builder.Services.AddScoped<CompetitionService>();
 builder.Services.AddScoped<PromotionService>();
 builder.Services.AddScoped<BetService>();
 builder.Services.AddScoped<EmailService>();
+
 //builder.Services.AddHostedService<SportsPlatform.Services.SportsSyncService>();
 //оце розкоментувати тільки коли треба буде синхронізація
 
-// Налаштування Аутентифікації (JWT) 
 builder.Services.AddAuthentication().AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
@@ -55,6 +56,8 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
+app.MapGet("/", () => Results.Ok("BetPulse API is running"));
+
 app.MapOpenApi();
 
 app.UseSwaggerUI(options =>
@@ -65,7 +68,6 @@ app.UseSwaggerUI(options =>
 
 app.UseHttpsRedirection();
 
-// 🔥 Використовуємо нашу нову політику замість "AllowAll"
 app.UseCors("FrontendPolicy");
 
 app.UseAuthentication();
